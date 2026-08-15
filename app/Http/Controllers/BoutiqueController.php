@@ -4,72 +4,73 @@ namespace App\Http\Controllers;
 
 use App\Models\Produit;
 use App\Models\Categorie;
-use App\Models\Cible;
+use App\Models\Matiere;
+use App\Models\Couleur;
 use Illuminate\Http\Request;
 
 class BoutiqueController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Produit::where('est_actif', true);
+        $query = Produit::where('est_actif', true)->with(['categorie', 'images', 'variantes']);
 
-        // Filtres
-        if ($request->has('categorie')) {
+        // Filtre par catégorie
+        if ($request->filled('categorie')) {
             $query->whereHas('categorie', function ($q) use ($request) {
                 $q->where('slug', $request->categorie);
             });
         }
 
-        if ($request->has('matiere')) {
+        // Filtre par matière
+        if ($request->filled('matiere')) {
             $query->whereHas('variantes.matiere', function ($q) use ($request) {
                 $q->where('slug', $request->matiere);
             });
         }
 
-        if ($request->has('prix_min')) {
-            $query->where('prix_base', '>=', $request->prix_min);
+        // Filtre par couleur
+        if ($request->filled('couleur')) {
+            $query->whereHas('variantes.couleur', function ($q) use ($request) {
+                $q->where('slug', $request->couleur);
+            });
         }
 
-        if ($request->has('prix_max')) {
+        // Filtre par prix
+        if ($request->filled('prix_max')) {
             $query->where('prix_base', '<=', $request->prix_max);
         }
 
-        $produits = $query->with(['images', 'variantes'])->paginate(12);
-        $categories = Categorie::where('actif', true)->get();
+        // Tri
+        $tri = $request->input('tri', 'recent');
+        switch ($tri) {
+            case 'prix_asc':
+                $query->orderBy('prix_base', 'asc');
+                break;
+            case 'prix_desc':
+                $query->orderBy('prix_base', 'desc');
+                break;
+            case 'nom':
+                $query->orderBy('nom', 'asc');
+                break;
+            default:
+                $query->latest();
+        }
 
-        return view('boutique.index', [
-            'produits' => $produits,
-            'categories' => $categories,
-        ]);
+        $produits = $query->paginate(12)->withQueryString();
+        
+        $categories = Categorie::where('actif', true)->get();
+        $matieres = Matiere::where('actif', true)->get();
+        $couleurs = Couleur::where('actif', true)->get();
+        
+        $categorieActive = $request->categorie ? Categorie::where('slug', $request->categorie)->first() : null;
+
+        return view('boutique.index', compact(
+            'produits', 'categories', 'matieres', 'couleurs', 'categorieActive'
+        ));
     }
 
     public function categorie($slug)
     {
-        $categorie = Categorie::where('slug', $slug)->where('actif', true)->firstOrFail();
-
-        $produits = Produit::where('categorie_id', $categorie->id)
-            ->where('est_actif', true)
-            ->with(['images', 'variantes'])
-            ->paginate(12);
-
-        return view('boutique.index', [
-            'produits' => $produits,
-            'categorie' => $categorie,
-        ]);
-    }
-
-    public function cible($slug)
-    {
-        $cible = Cible::where('slug', $slug)->where('actif', true)->firstOrFail();
-
-        $produits = $cible->produits()
-            ->where('est_actif', true)
-            ->with(['images', 'variantes'])
-            ->paginate(12);
-
-        return view('boutique.index', [
-            'produits' => $produits,
-            'cible' => $cible,
-        ]);
+        return redirect()->route('boutique', ['categorie' => $slug]);
     }
 }

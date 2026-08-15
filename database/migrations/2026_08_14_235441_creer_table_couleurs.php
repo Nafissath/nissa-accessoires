@@ -9,13 +9,17 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('couleurs', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+   public function up(): void
+{
+    Schema::create('couleurs', function (Blueprint $table) {
+        $table->id();
+        $table->string('nom');
+        $table->string('slug')->unique();
+        $table->string('code_hexadecimal', 7)->nullable();
+        $table->boolean('actif')->default(true);
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.

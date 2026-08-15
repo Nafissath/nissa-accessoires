@@ -12,7 +12,6 @@ class ProduitController extends Controller
             ->where('est_actif', true)
             ->with([
                 'categorie',
-                'collection',
                 'images',
                 'variantes.matiere',
                 'variantes.couleur',
@@ -27,9 +26,17 @@ class ProduitController extends Controller
             ->limit(4)
             ->get();
 
-        return view('produit.afficher', [
-            'produit' => $produit,
-            'produitsSimilaires' => $produitsSimilaires,
-        ]);
+        // Grouper les variantes par type pour les sélecteurs
+        $couleursDisponibles = $produit->variantes->pluck('couleur')->filter()->unique('id');
+        $taillesDisponibles = $produit->variantes->pluck('taille')->filter()->unique('id');
+        $matieresDisponibles = $produit->variantes->pluck('matiere')->filter()->unique('id');
+
+        return view('produit.afficher', compact(
+            'produit', 
+            'produitsSimilaires',
+            'couleursDisponibles',
+            'taillesDisponibles',
+            'matieresDisponibles'
+        ));
     }
 }

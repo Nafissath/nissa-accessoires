@@ -1,11 +1,40 @@
-@import 'tailwindcss';
-
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+@import "tailwindcss";
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    /* Couleurs plus vibrantes et saturées */
+    --color-nissa-cream: #FBF8F3;
+    --color-nissa-rose: #D98B92;
+    --color-nissa-rose-dark: #C17078;
+    --color-nissa-choco: #3D2817;
+    --color-nissa-choco-light: #6B4423;
+    --color-nissa-sauge: #7A9471;
+    --color-nissa-gold: #C9A961;
+    --font-display: "Playfair Display", serif;
+}
+
+/* Styles utilitaires personnalisés */
+@layer components {
+    .btn-nissa {
+        @apply inline-block bg-nissa-rose text-white px-6 py-3 rounded-full font-medium hover:bg-nissa-rose-dark transition shadow-lg hover:shadow-xl;
+    }
+    
+    .btn-nissa-dark {
+        @apply inline-block bg-nissa-choco text-white px-6 py-3 rounded-full font-medium hover:bg-nissa-choco-light transition shadow-lg hover:shadow-xl;
+    }
+    
+    .text-gradient {
+        background: linear-gradient(135deg, #D98B92 0%, #C9A961 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+}
+
+/* Masquer scrollbar mais garder scroll */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
