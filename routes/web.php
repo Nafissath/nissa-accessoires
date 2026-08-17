@@ -11,6 +11,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\TableauDeBordController;
 use App\Http\Controllers\Admin\ProduitController as AdminProduitController;
+use App\Http\Controllers\FavorisController;
 
 // Routes publiques
 Route::get('/', [AccueilController::class, 'index'])->name('accueil');
@@ -22,7 +23,7 @@ Route::get('/cible/{slug}', [BoutiqueController::class, 'cible'])->name('cible')
 Route::get('/produit/{slug}', [ProduitController::class, 'afficher'])->name('produit.afficher');
 
 Route::get('/packs', [PackController::class, 'index'])->name('packs.index');
-Route::get('/pack/{slug}', [PackController::class, 'afficher'])->name('pack.afficher');
+Route::get('/pack/{slug}', [PackController::class, 'afficher'])->name('packs.afficher');
 
 Route::get('/a-propos', [PageController::class, 'aPropos'])->name('pages.a-propos');
 Route::get('/contact', [PageController::class, 'contact'])->name('pages.contact');
@@ -59,3 +60,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::put('produits/{produit}', [AdminProduitController::class, 'mettreAJour'])->name('produits.mettre-a-jour')->middleware('auth');
     Route::delete('produits/{produit}', [AdminProduitController::class, 'supprimer'])->name('produits.supprimer')->middleware('auth');
 });
+
+// Routes Favoris
+Route::get('/favoris', [FavorisController::class, 'index'])->name('favoris.index');
+Route::post('/favoris/{produitId}', [FavorisController::class, 'ajouter'])->name('favoris.ajouter');
+Route::delete('/favoris/{produitId}', [FavorisController::class, 'retirer'])->name('favoris.retirer');

@@ -9,6 +9,7 @@ use App\Models\Couleur;
 use App\Models\Taille;
 use App\Models\Produit;
 use App\Models\VarianteProduit;
+use App\Models\ImageProduit;
 use Illuminate\Support\Str;
 
 class NissaSeeder extends Seeder
@@ -49,95 +50,135 @@ class NissaSeeder extends Seeder
         $tailleGrand = Taille::firstOrCreate(['slug' => 'grand'], ['nom' => 'Grand', 'actif' => true]);
         $tailleUnique = Taille::firstOrCreate(['slug' => 'unique'], ['nom' => 'Unique', 'actif' => true]);
 
-        // 5. Produits
+        // 5. Produits avec IMAGES UNSPLASH
         $produits = [
             [
                 'nom' => 'Chouchou Satin Élégance',
                 'slug' => 'chouchou-satin-elegance',
                 'description_courte' => 'Un chouchou en satin doux pour protéger vos cheveux.',
+                'description_longue' => 'Notre chouchou en satin premium est conçu pour prendre soin de vos cheveux au quotidien. La douceur du satin réduit les frictions, prévient la casse et les fourches. Parfait pour les cheveux naturels, lisses ou bouclés.',
                 'prix_base' => 1500,
                 'categorie' => $catChouchous,
                 'matiere' => $matSatin,
                 'couleurs' => [$colRose, $colBeige, $colNoir],
                 'tailles' => [$taillePetit, $tailleGrand],
                 'en_avant' => true,
+                'images' => [
+                    'https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=800&q=80',
+                    'https://images.unsplash.com/photo-1596993100471-c3905dafa3b2?w=800&q=80',
+                ],
             ],
             [
                 'nom' => 'Chouchou Velours Royal',
                 'slug' => 'chouchou-velours-royal',
                 'description_courte' => 'L\'élégance du velours pour vos coiffures.',
+                'description_longue' => 'Le chouchou en velours apporte une touche luxueuse et vintage à vos coiffures. Sa texture douce et riche est parfaite pour les occasions spéciales comme pour le quotidien.',
                 'prix_base' => 2000,
                 'categorie' => $catChouchous,
                 'matiere' => $matVelours,
                 'couleurs' => [$colChoco, $colRose, $colNoir],
                 'tailles' => [$tailleMoyen],
                 'en_avant' => true,
+                'images' => [
+                    'https://images.unsplash.com/photo-1606293459339-aa5d34a7b0e1?w=800&q=80',
+                    'https://images.unsplash.com/photo-1599459182681-78a85d0e51c6?w=800&q=80',
+                ],
             ],
             [
                 'nom' => 'Chouchou Soie Pure',
                 'slug' => 'chouchou-soie-pure',
                 'description_courte' => 'La douceur incomparable de la soie naturelle.',
+                'description_longue' => 'Notre chouchou en soie véritable est un must-have pour les cheveux exigeants. La soie maintient l\'hydratation naturelle et donne une brillance exceptionnelle.',
                 'prix_base' => 2500,
                 'categorie' => $catChouchous,
                 'matiere' => $matSoie,
                 'couleurs' => [$colBlanc, $colRose, $colBeige],
                 'tailles' => [$taillePetit, $tailleMoyen],
                 'en_avant' => true,
+                'images' => [
+                    'https://images.unsplash.com/photo-1598300042247-d83d4a5c86d5?w=800&q=80',
+                    'https://images.unsplash.com/photo-1616530940355-356782ae3071?w=800&q=80',
+                ],
             ],
             [
                 'nom' => 'Chouchou Laine Cocoon',
                 'slug' => 'chouchou-laine-cocoon',
                 'description_courte' => 'Douceur et chaleur pour les journées fraîches.',
+                'description_longue' => 'Le chouchou en laine douce est parfait pour la saison fraîche. Confortable et douillet, il apporte une touche cocooning à vos tenues.',
                 'prix_base' => 1800,
                 'categorie' => $catChouchous,
                 'matiere' => $matLaine,
                 'couleurs' => [$colBeige, $colChoco],
                 'tailles' => [$tailleGrand],
                 'en_avant' => true,
+                'images' => [
+                    'https://images.unsplash.com/photo-1617226213269-1c7b7f3d0e42?w=800&q=80',
+                    'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&q=80',
+                ],
             ],
             [
                 'nom' => 'Sac Crochet Bohème',
                 'slug' => 'sac-crochet-boheme',
                 'description_courte' => 'Un sac unique fait main au crochet.',
+                'description_longue' => 'Ce sac en crochet est entièrement fait main avec des fils de coton de qualité. Chaque pièce est unique, confectionnée avec amour par nos artisans.',
                 'prix_base' => 8500,
                 'categorie' => $catSacs,
                 'matiere' => $matCrochet,
                 'couleurs' => [$colBeige, $colChoco],
                 'tailles' => [$tailleUnique],
                 'en_avant' => true,
+                'images' => [
+                    'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800&q=80',
+                    'https://images.unsplash.com/photo-1591348278863-a8fb3887e2aa?w=800&q=80',
+                ],
             ],
             [
                 'nom' => 'Pochette Soirée Satin',
                 'slug' => 'pochette-soiree-satin',
                 'description_courte' => 'Élégance pour vos soirées spéciales.',
+                'description_longue' => 'Cette pochette en satin est l\'accessoire idéal pour vos soirées, mariages et occasions spéciales. Son éclat discret sublime toutes vos tenues.',
                 'prix_base' => 5000,
                 'categorie' => $catSacs,
                 'matiere' => $matSatin,
                 'couleurs' => [$colRose, $colNoir, $colChoco],
                 'tailles' => [$tailleUnique],
                 'en_avant' => true,
+                'images' => [
+                    'https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=800&q=80',
+                    'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=800&q=80',
+                ],
             ],
             [
                 'nom' => 'Trousse Crochet Fleurie',
                 'slug' => 'trousse-crochet-fleurie',
                 'description_courte' => 'Trousse artisanale avec motifs fleuris.',
+                'description_longue' => 'Cette trousse au crochet est ornée de délicates fleurs faites main. Parfaite pour ranger maquillage, stylos ou petits accessoires.',
                 'prix_base' => 4500,
                 'categorie' => $catTrousses,
                 'matiere' => $matCrochet,
                 'couleurs' => [$colRose, $colBeige],
                 'tailles' => [$tailleUnique],
                 'en_avant' => true,
+                'images' => [
+                    'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=800&q=80',
+                    'https://images.unsplash.com/photo-1594223274512-ad480f53b7d2?w=800&q=80',
+                ],
             ],
             [
                 'nom' => 'Trousse Velours Chic',
                 'slug' => 'trousse-velours-chic',
                 'description_courte' => 'Trousse élégante en velours doux.',
+                'description_longue' => 'Trousse en velours premium avec fermeture dorée. Idéale pour organiser vos essentiels avec élégance.',
                 'prix_base' => 3500,
                 'categorie' => $catTrousses,
                 'matiere' => $matVelours,
                 'couleurs' => [$colNoir, $colChoco, $colRose],
                 'tailles' => [$tailleUnique],
                 'en_avant' => true,
+                'images' => [
+                    'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&q=80',
+                    'https://images.unsplash.com/photo-1591561954557-26941169b49e?w=800&q=80',
+                ],
             ],
         ];
 
@@ -147,6 +188,7 @@ class NissaSeeder extends Seeder
                 [
                     'nom' => $data['nom'],
                     'description_courte' => $data['description_courte'],
+                    'description_longue' => $data['description_longue'],
                     'prix_base' => $data['prix_base'],
                     'categorie_id' => $data['categorie']->id,
                     'est_actif' => true,
@@ -154,10 +196,22 @@ class NissaSeeder extends Seeder
                 ]
             );
 
-            // Créer les variantes avec SKU unique basé sur le SLUG complet
+            // Créer les images (URLs Unsplash directement)
+            foreach ($data['images'] as $index => $imageUrl) {
+                ImageProduit::firstOrCreate(
+                    [
+                        'produit_id' => $produit->id,
+                        'chemin' => $imageUrl,
+                    ],
+                    [
+                        'est_principale' => $index === 0,
+                    ]
+                );
+            }
+
+            // Créer les variantes
             foreach ($data['couleurs'] as $couleur) {
                 foreach ($data['tailles'] as $taille) {
-                    // SKU unique : slug-produit + couleur + taille
                     $sku = strtoupper(
                         Str::limit(str_replace('-', '', $produit->slug), 10, '') . 
                         '-' . 
@@ -184,6 +238,6 @@ class NissaSeeder extends Seeder
             }
         }
 
-        $this->command->info('✅ ' . count($produits) . ' produits créés avec leurs variantes !');
+        $this->command->info('✅ 8 produits créés avec images et variantes !');
     }
 }
