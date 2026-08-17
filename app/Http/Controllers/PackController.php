@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pack;
+use Illuminate\Http\Request;
 
 class PackController extends Controller
 {
@@ -10,6 +11,7 @@ class PackController extends Controller
     {
         $packs = Pack::where('actif', true)
             ->with(['articles.produit.images'])
+            ->latest()
             ->get();
 
         return view('packs.index', [
@@ -21,7 +23,7 @@ class PackController extends Controller
     {
         $pack = Pack::where('slug', $slug)
             ->where('actif', true)
-            ->with(['articles.produit.images', 'articles.variante'])
+            ->with(['articles.produit.images', 'articles.produit.categorie', 'articles.variante'])
             ->firstOrFail();
 
         return view('packs.afficher', [
