@@ -10,33 +10,36 @@ class AuthController extends Controller
 {
     public function afficherFormulaireConnexion()
     {
-        return view('admin.connexion');
+        if (Auth::guard('admin')->check()) {
+            return redirect()->route('admin.tableau-de-bord');
+        }
+        
+        return view('admin.auth.connexion');
     }
 
     public function connecter(Request $request)
     {
-        $request->validate([
+        $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        if (Auth::guard('admin')->attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
-
             return redirect()->route('admin.tableau-de-bord');
         }
 
         return back()->withErrors([
-            'email' => 'Les identifiants ne correspondent pas.',
-        ]);
+            'email' => 'Email ou mot de passe incorrect.',
+        ])->onlyInput('email');
     }
 
     public function deconnecter(Request $request)
     {
-        Auth::logout();
+        Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
+        
         return redirect()->route('admin.connexion');
     }
 }
