@@ -37,12 +37,18 @@ return [
     |
     */
 
-    'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
+   'guards' => [
+    'web' => [
+        'driver' => 'session',
+        'provider' => 'users',
     ],
+    
+    // AJOUTER CE GUARD
+    'admin' => [
+        'driver' => 'session',
+        'provider' => 'admins',
+    ],
+],
 
     /*
     |--------------------------------------------------------------------------
@@ -60,18 +66,18 @@ return [
     | Supported: "database", "eloquent"
     |
     */
-
-    'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', User::class),
-        ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+'providers' => [
+    'users' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\User::class,
     ],
+    
+    // AJOUTER CE PROVIDER
+    'admins' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\Admin::class,
+    ],
+],
 
     /*
     |--------------------------------------------------------------------------

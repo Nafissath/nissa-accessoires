@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Support\Facades\Route; 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AccueilController;
 use App\Http\Controllers\BoutiqueController;
 use App\Http\Controllers\ProduitController;
@@ -11,9 +11,19 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\TableauDeBordController;
 use App\Http\Controllers\Admin\ProduitController as AdminProduitController;
+use App\Http\Controllers\Admin\CommandeController as AdminCommandeController;
 use App\Http\Controllers\FavorisController;
 
-// Routes publiques
+// ============================================
+// ROUTE LOGIN PAR DÉFAUT (obligatoire pour Laravel)
+// ============================================
+Route::get('/login', function () {
+    return redirect('/admin/connexion');
+})->name('login');
+
+// ============================================
+// ROUTES PUBLIQUES
+// ============================================
 Route::get('/', [AccueilController::class, 'index'])->name('accueil');
 
 Route::get('/boutique', [BoutiqueController::class, 'index'])->name('boutique');
@@ -42,26 +52,77 @@ Route::prefix('commande')->group(function () {
     Route::get('/confirmation/{commande}', [CommandeController::class, 'confirmation'])->name('commande.confirmation');
 });
 
-// Routes admin
-Route::prefix('admin')->name('admin.')->group(function () {
-    // Authentification admin
-    Route::get('connexion', [AuthController::class, 'afficherFormulaireConnexion'])->name('connexion');
-    Route::post('connexion', [AuthController::class, 'connecter'])->name('connecter');
-    Route::post('deconnexion', [AuthController::class, 'deconnecter'])->name('deconnexion');
-
-    // Dashboard
-    Route::get('/', [TableauDeBordController::class, 'index'])->name('tableau-de-bord')->middleware('auth');
-
-    // Produits
-    Route::get('produits', [AdminProduitController::class, 'index'])->name('produits.index')->middleware('auth');
-    Route::get('produits/creer', [AdminProduitController::class, 'creer'])->name('produits.creer')->middleware('auth');
-    Route::post('produits', [AdminProduitController::class, 'enregistrer'])->name('produits.enregistrer')->middleware('auth');
-    Route::get('produits/{produit}/modifier', [AdminProduitController::class, 'modifier'])->name('produits.modifier')->middleware('auth');
-    Route::put('produits/{produit}', [AdminProduitController::class, 'mettreAJour'])->name('produits.mettre-a-jour')->middleware('auth');
-    Route::delete('produits/{produit}', [AdminProduitController::class, 'supprimer'])->name('produits.supprimer')->middleware('auth');
-});
-
 // Routes Favoris
 Route::get('/favoris', [FavorisController::class, 'index'])->name('favoris.index');
 Route::post('/favoris/{produitId}', [FavorisController::class, 'ajouter'])->name('favoris.ajouter');
 Route::delete('/favoris/{produitId}', [FavorisController::class, 'retirer'])->name('favoris.retirer');
+
+// ============================================
+// ROUTES ADMIN - Authentification (publiques)
+// ============================================
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('connexion', [AuthController::class, 'afficherFormulaireConnexion'])->name('connexion');
+    Route::post('connexion', [AuthController::class, 'connecter'])->name('connecter');
+    Route::post('deconnexion', [AuthController::class, 'deconnecter'])->name('deconnexion');
+});
+
+// ============================================
+// ROUTES ADMIN - Protégées (avec middleware admin.auth)
+// ============================================
+Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function () {
+    // Dashboard
+    Route::get('/', [TableauDeBordController::class, 'index'])->name('tableau-de-bord');
+
+    // Produits
+    Route::get('produits', [AdminProduitController::class, 'index'])->name('produits.index');
+    Route::get('produits/creer', [AdminProduitController::class, 'creer'])->name('produits.creer');
+    Route::post('produits', [AdminProduitController::class, 'enregistrer'])->name('produits.enregistrer');
+    Route::get('produits/{produit}/modifier', [AdminProduitController::class, 'modifier'])->name('produits.modifier');
+    Route::put('produits/{produit}', [AdminProduitController::class, 'mettreAJour'])->name('produits.mettre-a-jour');
+    Route::delete('produits/{produit}', [AdminProduitController::class, 'supprimer'])->name('produits.supprimer');
+
+    // Commandes
+    Route::get('commandes', [AdminCommandeController::class, 'index'])->name('commandes.index');
+    Route::get('commandes/{commande}', [AdminCommandeController::class, 'show'])->name('commandes.show');
+    Route::patch('commandes/{commande}/statut', [AdminCommandeController::class, 'updateStatut'])->name('commandes.updateStatut');
+
+    // Images produits
+    Route::delete('images/{image}', [\App\Http\Controllers\Admin\ProduitController::class, 'supprimerImage'])->name('images.supprimer');
+    Route::patch('images/{image}/principale', [\App\Http\Controllers\Admin\ProduitController::class, 'imagePrincipale'])->name('images.principale');
+
+    // Catégories
+    Route::get('categories', [\App\Http\Controllers\Admin\CategorieController::class, 'index'])->name('categories.index');
+    Route::post('categories', [\App\Http\Controllers\Admin\CategorieController::class, 'enregistrer'])->name('categories.enregistrer');
+    Route::delete('categories/{categorie}', [\App\Http\Controllers\Admin\CategorieController::class, 'supprimer'])->name('categories.supprimer');
+    Route::patch('categories/{categorie}/toggle', [\App\Http\Controllers\Admin\CategorieController::class, 'toggleActif'])->name('categories.toggleActif');
+
+    // Collections
+Route::get('collections', [\App\Http\Controllers\Admin\CollectionController::class, 'index'])->name('collections.index');
+Route::post('collections', [\App\Http\Controllers\Admin\CollectionController::class, 'enregistrer'])->name('collections.enregistrer');
+Route::delete('collections/{collection}', [\App\Http\Controllers\Admin\CollectionController::class, 'supprimer'])->name('collections.supprimer');
+Route::patch('collections/{collection}/toggle', [\App\Http\Controllers\Admin\CollectionController::class, 'toggleActif'])->name('collections.toggleActif');
+
+// Packs
+Route::get('packs', [\App\Http\Controllers\Admin\PackController::class, 'index'])->name('packs.index');
+Route::get('packs/creer', [\App\Http\Controllers\Admin\PackController::class, 'creer'])->name('packs.creer');
+Route::post('packs', [\App\Http\Controllers\Admin\PackController::class, 'enregistrer'])->name('packs.enregistrer');
+Route::get('packs/{pack}/modifier', [\App\Http\Controllers\Admin\PackController::class, 'modifier'])->name('packs.modifier');
+Route::put('packs/{pack}', [\App\Http\Controllers\Admin\PackController::class, 'mettreAJour'])->name('packs.mettre-a-jour');
+Route::delete('packs/{pack}', [\App\Http\Controllers\Admin\PackController::class, 'supprimer'])->name('packs.supprimer');
+
+
+// Clientes
+Route::get('clientes', [\App\Http\Controllers\Admin\ClienteController::class, 'index'])->name('clientes.index');
+Route::get('clientes/{cliente}', [\App\Http\Controllers\Admin\ClienteController::class, 'show'])->name('clientes.show');
+
+// Attributs (matières, couleurs, tailles)
+Route::get('attributs', [\App\Http\Controllers\Admin\AttributController::class, 'index'])->name('attributs.index');
+Route::post('attributs', [\App\Http\Controllers\Admin\AttributController::class, 'enregistrer'])->name('attributs.enregistrer');
+Route::delete('attributs/{type}/{id}', [\App\Http\Controllers\Admin\AttributController::class, 'supprimer'])->name('attributs.supprimer');
+Route::patch('attributs/{type}/{id}/toggle', [\App\Http\Controllers\Admin\AttributController::class, 'toggle'])->name('attributs.toggle');
+
+// Paramètres
+Route::get('parametres', [\App\Http\Controllers\Admin\ParametreController::class, 'index'])->name('parametres.index');
+Route::put('parametres', [\App\Http\Controllers\Admin\ParametreController::class, 'update'])->name('parametres.update');
+
+});
