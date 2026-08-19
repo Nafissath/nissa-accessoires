@@ -17,15 +17,12 @@
         </nav>
 
         <div class="mb-10">
-            {{-- <span class="inline-block text-xs uppercase tracking-[0.25em] text-nissa-rose font-semibold mb-2">
-                Étape 2 sur 2
-            </span> --}}
             <h1 class="text-3xl md:text-4xl font-bold text-nissa-choco" style="font-family: 'Playfair Display', serif;">
                 Finaliser votre <span class="italic">commande</span>
             </h1>
         </div>
 
-        <form method="POST" action="{{ route('commande.enregistrer') }}" class="space-y-8">
+        <form id="form-commande" method="POST" action="{{ route('commande.enregistrer') }}" class="space-y-8">
             @csrf
 
             {{-- Récapitulatif --}}
@@ -194,38 +191,35 @@
             </div>
 
             {{-- Mode de paiement --}}
-            {{-- ============================================================
-     MODE DE PAIEMENT (Mobile Money uniquement)
-============================================================= --}}
-<div class="bg-white border border-gray-200 rounded-3xl p-6 md:p-8">
-    <h2 class="text-xl font-semibold text-nissa-choco mb-6" style="font-family: 'Playfair Display', serif;">
-        Mode de paiement
-    </h2>
+            <div class="bg-white border border-gray-200 rounded-3xl p-6 md:p-8">
+                <h2 class="text-xl font-semibold text-nissa-choco mb-6" style="font-family: 'Playfair Display', serif;">
+                    Mode de paiement
+                </h2>
 
-    <div class="bg-nissa-rose/5 border border-nissa-rose/20 rounded-2xl p-5">
-        <div class="flex items-start gap-4">
-            <div class="w-12 h-12 bg-nissa-rose/10 rounded-xl flex items-center justify-center shrink-0">
-                <svg class="w-6 h-6 text-nissa-rose" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                </svg>
-            </div>
-            <div class="flex-1">
-                <p class="font-semibold text-nissa-choco mb-1">Mobile Money</p>
-                <p class="text-sm text-gray-600">
-                    Après confirmation de votre commande, vous recevrez une demande de paiement sur votre téléphone via :
-                </p>
-                <div class="flex flex-wrap gap-2 mt-3">
-                    <span class="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-700">MTN MoMo</span>
-                    <span class="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-700">Moov Money</span>
-                    <span class="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-700">Celtis Cash</span>
+                <div class="bg-nissa-rose/5 border border-nissa-rose/20 rounded-2xl p-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-nissa-rose/10 rounded-xl flex items-center justify-center shrink-0">
+                            <svg class="w-6 h-6 text-nissa-rose" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-semibold text-nissa-choco mb-1">Mobile Money</p>
+                            <p class="text-sm text-gray-600">
+                                Après validation du formulaire, vous recevrez une demande de paiement sur votre téléphone via :
+                            </p>
+                            <div class="flex flex-wrap gap-2 mt-3">
+                                <span class="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-700">MTN MoMo</span>
+                                <span class="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-700">Moov Money</span>
+                                <span class="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-700">Celtis Cash</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-3">
+                                 Vous n'aurez qu'à valider le paiement sur votre téléphone pour confirmer la commande.
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <p class="text-xs text-gray-500 mt-3">
-                     Vous n'aurez qu'à valider le paiement sur votre téléphone pour confirmer la commande.
-                </p>
             </div>
-        </div>
-    </div>
-</div>
 
             {{-- Boutons --}}
             <div class="flex flex-col sm:flex-row gap-4 pt-4">
@@ -233,9 +227,9 @@
                     class="flex-1 px-8 py-4 border-2 border-gray-200 text-gray-700 rounded-2xl font-semibold hover:bg-gray-50 transition text-center">
                     ← Retour au panier
                 </a>
-                <button type="submit"
+                <button type="submit" id="btn-payer"
                     class="flex-1 px-8 py-4 bg-nissa-choco text-white rounded-2xl font-semibold hover:bg-nissa-rose transition shadow-lg">
-                    Confirmer et payer
+                    Confirmer et payer {{ number_format($total, 0, ',', ' ') }} FCFA
                 </button>
             </div>
 
@@ -263,5 +257,58 @@
         </form>
     </div>
 </section>
+
+{{-- Script Kkiapay (sera activé quand tu auras tes clés API) --}}
+<script>
+    // Ce script sera activé quand tu auras tes clés API Kkiapay
+    // Pour l'instant, le formulaire fonctionne normalement
+    
+    document.getElementById('form-commande').addEventListener('submit', function(e) {
+        // Quand Kkiapay sera activé, on interceptera ici pour lancer le paiement
+        // Pour l'instant, on laisse le formulaire se soumettre normalement
+        
+        /*
+        // CODE À ACTIVER QUAND KKIAPAY SERA VALIDÉ :
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        
+        // D'abord soumettre le formulaire pour créer la commande
+        fetch(this.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.commande_id) {
+                // Lancer le paiement Kkiapay
+                kkiapay.request({
+                    amount: {{ $total }},
+                    phone: formData.get('telephone'),
+                    callback: (status, response) => {
+                        if (response.status === 'SUCCESS') {
+                            // Paiement réussi, confirmer la commande
+                            fetch('/commande/confirmer-paiement', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                                },
+                                body: JSON.stringify({
+                                    commande_id: data.commande_id,
+                                    transaction_id: response.transactionId
+                                })
+                            })
+                            .then(() => {
+                                window.location.href = '/commande/confirmation/' + data.commande_id;
+                            });
+                        }
+                    }
+                });
+            }
+        });
+        */
+    });
+</script>
 
 @endsection
