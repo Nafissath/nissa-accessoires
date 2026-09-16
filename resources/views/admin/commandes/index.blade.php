@@ -42,6 +42,7 @@
                 <option value="">Tous</option>
                 <option value="non_paye" {{ request('paiement') == 'non_paye' ? 'selected' : '' }}>Non payé</option>
                 <option value="paye" {{ request('paiement') == 'paye' ? 'selected' : '' }}>Payé</option>
+                <option value="rembourse" {{ request('paiement') == 'rembourse' ? 'selected' : '' }}>Remboursé</option>
             </select>
         </div>
 
@@ -50,7 +51,7 @@
                 Filtrer
             </button>
             <a href="{{ route('admin.commandes.index') }}" class="px-4 py-2 border border-gray-200 rounded-xl text-sm text-gray-600 hover:bg-gray-50 transition">
-                ✕
+                Effacer
             </a>
         </div>
     </form>
@@ -75,11 +76,40 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                     @foreach ($commandes as $commande)
+                        @php
+                            $couleursStatut = [
+                                'en_attente' => 'bg-yellow-100 text-yellow-800',
+                                'payee' => 'bg-green-100 text-green-800',
+                                'expediee' => 'bg-blue-100 text-blue-800',
+                                'livree' => 'bg-purple-100 text-purple-800',
+                                'annulee' => 'bg-red-100 text-red-800',
+                            ];
+                            $labelsStatut = [
+                                'en_attente' => 'En attente',
+                                'payee' => 'Payée',
+                                'expediee' => 'Expédiée',
+                                'livree' => 'Livrée',
+                                'annulee' => 'Annulée',
+                            ];
+                            $couleursPaiement = [
+                                'non_paye' => 'bg-red-100 text-red-800',
+                                'paye' => 'bg-green-100 text-green-800',
+                                'rembourse' => 'bg-gray-100 text-gray-800',
+                            ];
+                            $labelsPaiement = [
+                                'non_paye' => 'Non payé',
+                                'paye' => 'Payé',
+                                'rembourse' => 'Remboursé',
+                            ];
+                        @endphp
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-6 py-4">
                                 <a href="{{ route('admin.commandes.show', $commande->id) }}" class="font-semibold text-nissa-choco hover:text-nissa-rose">
                                     {{ $commande->numero_commande }}
                                 </a>
+                                @if ($commande->stock_decremente)
+                                    <p class="text-[11px] text-green-600 mt-1">Stock décrémenté</p>
+                                @endif
                             </td>
                             <td class="px-6 py-4">
                                 <div>
@@ -100,39 +130,11 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4">
-                                @php
-                                    $couleursStatut = [
-                                        'en_attente' => 'bg-yellow-100 text-yellow-800',
-                                        'payee' => 'bg-green-100 text-green-800',
-                                        'expediee' => 'bg-blue-100 text-blue-800',
-                                        'livree' => 'bg-purple-100 text-purple-800',
-                                        'annulee' => 'bg-red-100 text-red-800',
-                                    ];
-                                    $labelsStatut = [
-                                        'en_attente' => 'En attente',
-                                        'payee' => 'Payée',
-                                        'expediee' => 'Expédiée',
-                                        'livree' => 'Livrée',
-                                        'annulee' => 'Annulée',
-                                    ];
-                                @endphp
                                 <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full {{ $couleursStatut[$commande->statut] ?? 'bg-gray-100 text-gray-800' }}">
                                     {{ $labelsStatut[$commande->statut] ?? ucfirst($commande->statut) }}
                                 </span>
                             </td>
                             <td class="px-6 py-4">
-                                @php
-                                    $couleursPaiement = [
-                                        'non_paye' => 'bg-red-100 text-red-800',
-                                        'paye' => 'bg-green-100 text-green-800',
-                                        'rembourse' => 'bg-gray-100 text-gray-800',
-                                    ];
-                                    $labelsPaiement = [
-                                        'non_paye' => 'Non payé',
-                                        'paye' => 'Payé',
-                                        'rembourse' => 'Remboursé',
-                                    ];
-                                @endphp
                                 <span class="inline-flex px-2.5 py-1 text-xs font-medium rounded-full {{ $couleursPaiement[$commande->statut_paiement] ?? 'bg-gray-100 text-gray-800' }}">
                                     {{ $labelsPaiement[$commande->statut_paiement] ?? $commande->statut_paiement }}
                                 </span>
@@ -141,9 +143,9 @@
                                 {{ $commande->date_commande ? $commande->date_commande->format('d/m/Y H:i') : '-' }}
                             </td>
                             <td class="px-6 py-4">
-                                <a href="{{ route('admin.commandes.show', $commande->id) }}" 
+                                <a href="{{ route('admin.commandes.show', $commande->id) }}"
                                    class="text-nissa-rose hover:underline text-sm font-medium">
-                                    Voir →
+                                    Voir
                                 </a>
                             </td>
                         </tr>

@@ -6,7 +6,7 @@
 @section('content')
 
 <form method="POST" action="{{ route('admin.parametres.update') }}" class="max-w-3xl bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 space-y-5">
-    @csrf
+     @csrf
     @method('PUT')
 
     <div>
