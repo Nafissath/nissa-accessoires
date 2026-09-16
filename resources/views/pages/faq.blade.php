@@ -16,7 +16,7 @@
             </details>
             <details class="bg-gray-50 rounded-2xl p-6">
                 <summary class="font-semibold text-nissa-choco cursor-pointer">Quels modes de paiement acceptez-vous ?</summary>
-                <p class="mt-3 text-gray-600">MTN MoMo, Moov Money, Celtis Cash et paiement à la livraison.</p>
+                <p class="mt-3 text-gray-600">MTN MoMo, Moov Money,  ou carte bancaire .</p>
             </details>
             <details class="bg-gray-50 rounded-2xl p-6">
                 <summary class="font-semibold text-nissa-choco cursor-pointer">Vos produits sont-ils faits main ?</summary>
