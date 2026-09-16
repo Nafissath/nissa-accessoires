@@ -57,7 +57,7 @@ class PackController extends Controller
             'prix_base' => $request->prix_base,
             'prix_promo' => $request->prix_promo,
             'image' => $imagePath,
-            'est_actif' => $request->has('est_actif'),
+            'actif' => $request->has('actif'),  // ⚠️ 'actif' et non 'est_actif'
         ]);
 
         // Ajouter les articles au pack
@@ -103,7 +103,7 @@ class PackController extends Controller
             'description' => $request->description,
             'prix_base' => $request->prix_base,
             'prix_promo' => $request->prix_promo,
-            'est_actif' => $request->has('est_actif'),
+            'actif' => $request->has('actif'),  // ⚠️ 'actif' et non 'est_actif'
         ]);
 
         // Supprimer anciens articles et recréer

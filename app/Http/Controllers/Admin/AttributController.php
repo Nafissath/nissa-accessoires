@@ -30,23 +30,31 @@ class AttributController extends Controller
         ]);
     }
 
-    public function enregistrer(Request $request)
-    {
-        $request->validate([
-            'type' => 'required|in:matiere,couleur,taille',
-            'nom' => 'required|string|max:255',
-        ]);
+   public function enregistrer(Request $request)
+{
+    $request->validate([
+        'type' => 'required|in:matiere,couleur,taille',
+        'nom' => 'required|string|max:255',
+        'code_hex' => 'nullable|string|max:7',
+    ]);
 
-        $modele = $this->modele($request->type);
-
-        $modele::create([
-            'nom' => $request->nom,
-            'slug' => Str::slug($request->nom),
-            'actif' => true,
-        ]);
-
-        return back()->with('success', ucfirst($request->type) . ' ajoutée !');
+    $modele = $this->modele($request->type);
+    
+    $data = [
+        'nom' => $request->nom,
+        'slug' => Str::slug($request->nom),
+        'actif' => true,
+    ];
+    
+    // Ajouter le code hex si c'est une couleur
+    if ($request->type === 'couleur' && $request->filled('code_hex')) {
+        $data['code_hexadecimal'] = $request->code_hex;
     }
+
+    $modele::create($data);
+
+    return back()->with('success', ucfirst($request->type) . ' ajoutée !');
+}
 
     public function supprimer(Request $request, string $type, $id)
     {
