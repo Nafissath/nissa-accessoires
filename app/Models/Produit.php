@@ -25,7 +25,10 @@ class Produit extends Model
         'poids',
         'titre_seo',
         'description_seo',
+        'badge',
+        'nuances_couleurs',
     ];
+    
 
     protected $casts = [
         'est_pack' => 'boolean',
@@ -58,4 +61,6 @@ class Produit extends Model
     {
         return $this->belongsToMany(Cible::class, 'cible_produit', 'produit_id', 'cible_id');
     }
+
+    
 }

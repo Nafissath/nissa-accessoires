@@ -6,22 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('parametres', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('produits', function (Blueprint $table) {
+            $table->string('nuances_couleurs')->nullable()->after('badge');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('parametres');
+        Schema::table('produits', function (Blueprint $table) {
+            $table->dropColumn('nuances_couleurs');
+        });
     }
 };
