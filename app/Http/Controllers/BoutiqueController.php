@@ -12,13 +12,32 @@ class BoutiqueController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Produit::where('est_actif', true)->with(['categorie', 'images', 'variantes']);
+        $query = Produit::where('est_actif', true)->with([
+            'categorie',
+            'images',
+            'variantes.couleur',
+            'variantes.taille',
+            'variantes.matiere'
+        ]);
+
+        // Masquer les produits dont TOUTES les variantes sont en rupture
+        // (les produits sans variantes restent affichés)
+        $query->where(function ($q) {
+            $q->whereHas('variantes', function ($v) {
+                $v->where('stock', '>', 0);
+            })->orWhereDoesntHave('variantes');
+        });
 
         // Filtre par catégorie
         if ($request->filled('categorie')) {
             $query->whereHas('categorie', function ($q) use ($request) {
                 $q->where('slug', $request->categorie);
             });
+        }
+
+        // Filtre par badge
+        if ($request->filled('badge')) {
+            $query->where('badge', $request->badge);
         }
 
         // Filtre par matière
@@ -57,15 +76,19 @@ class BoutiqueController extends Controller
         }
 
         $produits = $query->paginate(12)->withQueryString();
-        
+
         $categories = Categorie::where('actif', true)->get();
         $matieres = Matiere::where('actif', true)->get();
         $couleurs = Couleur::where('actif', true)->get();
-        
+
         $categorieActive = $request->categorie ? Categorie::where('slug', $request->categorie)->first() : null;
 
         return view('boutique.index', compact(
-            'produits', 'categories', 'matieres', 'couleurs', 'categorieActive'
+            'produits',
+            'categories',
+            'matieres',
+            'couleurs',
+            'categorieActive'
         ));
     }
 
@@ -73,4 +96,44 @@ class BoutiqueController extends Controller
     {
         return redirect()->route('boutique', ['categorie' => $slug]);
     }
+
+    public function cible($slug)
+    {
+        return redirect()->route('boutique');
+    }
+
+    public function recherche(Request $request)
+{
+    $query = Produit::where('est_actif', true)
+        ->with(['categorie', 'images', 'variantes']);
+
+    if ($request->filled('q')) {
+        $terme = $request->q;
+        $query->where(function ($q) use ($terme) {
+            $q->where('nom', 'LIKE', "%{$terme}%")
+              ->orWhere('description_courte', 'LIKE', "%{$terme}%")
+              ->orWhereHas('categorie', function ($q2) use ($terme) {
+                  $q2->where('nom', 'LIKE', "%{$terme}%");
+              });
+        });
+    }
+
+    // Filtrer les produits sans stock
+    $query->where(function ($q) {
+        $q->whereHas('variantes', function ($v) {
+            $v->where('stock', '>', 0);
+        })->orWhereDoesntHave('variantes');
+    });
+
+    $produits = $query->latest()->paginate(12)->withQueryString();
+    $categories = Categorie::where('actif', true)->get();
+
+    return view('boutique.recherche', [
+        'produits' => $produits,
+        'categories' => $categories,
+        'categorieActive' => null,
+        'title' => 'Recherche : ' . ($request->q ?? ''),
+        'description' => 'Résultats de recherche pour "' . ($request->q ?? '') . '" sur Nissa Accessoires'
+    ]);
+}
 }
