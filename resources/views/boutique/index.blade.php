@@ -148,7 +148,7 @@
         </div>
 
     </section>
-    
+
     <!-- ======================== FILTRES ======================== -->
     <section class="bg-white border-b border-[#eee8e3]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -163,17 +163,20 @@
                 <div class="flex flex-wrap items-end justify-between gap-4 border-b border-[#eee8e3]">
 
                     <!-- Onglets catégories (style souligné) -->
+                    <!-- Onglets catégories (style souligné) -->
                     <nav class="flex items-center gap-7 overflow-x-auto scrollbar-hide">
-                        <a href="{{ route('boutique') }}"
+                        {{-- Lien "Toutes" : retire juste la catégorie, garde les autres filtres --}}
+                        <a href="{{ route('boutique', request()->except(['categorie', 'page'])) }}"
                             class="py-4 text-base font-medium whitespace-nowrap border-b-2 transition
-                            {{ !request('categorie') ? 'border-nissa-rose text-nissa-choco' : 'border-transparent text-gray-500 hover:text-nissa-choco' }}">
+        {{ !request('categorie') ? 'border-nissa-rose text-nissa-choco' : 'border-transparent text-gray-500 hover:text-nissa-choco' }}">
                             Toutes
                         </a>
 
+                        {{-- Liens catégories : ajoute la catégorie cliquée, garde les autres filtres --}}
                         @foreach ($categories as $cat)
-                            <a href="{{ route('boutique', ['categorie' => $cat->slug]) }}"
+                            <a href="{{ route('boutique', array_merge(request()->except(['categorie', 'page']), ['categorie' => $cat->slug])) }}"
                                 class="py-4 text-base font-medium whitespace-nowrap border-b-2 transition
-                                {{ request('categorie') == $cat->slug ? 'border-nissa-rose text-nissa-choco' : 'border-transparent text-gray-500 hover:text-nissa-choco' }}">
+            {{ request('categorie') == $cat->slug ? 'border-nissa-rose text-nissa-choco' : 'border-transparent text-gray-500 hover:text-nissa-choco' }}">
                                 {{ $cat->nom }}
                             </a>
                         @endforeach
@@ -195,7 +198,7 @@
                 </div>
 
                 <!-- Ligne 2 : matières -->
-                <div class="flex items-center gap-2 flex-wrap py-4">
+                {{-- <div class="flex items-center gap-2 flex-wrap py-4">
                     <span class="text-sm text-gray-500 mr-1">Matière :</span>
 
                     @foreach ($matieres as $mat)
@@ -215,6 +218,68 @@
                             ✕ Tout effacer
                         </a>
                     @endif
+                </div> --}}
+
+                <!-- Ligne 2 : matières -->
+                <div class="flex items-center gap-2 flex-wrap py-4 border-b border-[#eee8e3]">
+                    <span class="text-sm text-gray-500 mr-1">Matière :</span>
+
+                    @foreach ($matieres as $mat)
+                        <label class="cursor-pointer">
+                            <input type="checkbox" name="matiere" value="{{ $mat->slug }}" class="hidden"
+                                {{ request('matiere') == $mat->slug ? 'checked' : '' }} onchange="this.form.submit()">
+                            <span
+                                class="inline-block px-4 py-2 rounded-full text-sm font-medium transition-all
+                {{ request('matiere') == $mat->slug ? 'bg-nissa-choco text-white shadow' : 'bg-[#FBF8F3] text-gray-700 border border-[#e5ddd5] hover:border-nissa-rose hover:text-nissa-rose' }}">
+                                {{ $mat->nom }}
+                            </span>
+                        </label>
+                    @endforeach
+
+                    @if (request()->anyFilled(['categorie', 'matiere', 'tri', 'badge']))
+                        <a href="{{ route('boutique') }}" class="ml-2 text-sm text-gray-500 hover:text-nissa-rose">
+                            ✕ Tout effacer
+                        </a>
+                    @endif
+                </div>
+
+                {{-- ✅ NOUVELLE LIGNE : Filtres par badges --}}
+                <div class="flex items-center gap-2 flex-wrap py-4">
+                    <span class="text-sm text-gray-500 mr-1">Filtrer par :</span>
+
+                    @php
+                        $badges = [
+                            'nouveau' => [
+                                'label' => ' Nouveautés',
+                                'style' => 'bg-blue-500/15 text-blue-700 border-blue-300',
+                            ],
+                            'promo' => [
+                                'label' => ' Promos',
+                                'style' => 'bg-red-500/15 text-red-700 border-red-300',
+                            ],
+                            'bestseller' => [
+                                'label' => ' Bestsellers',
+                                'style' => 'bg-yellow-500/15 text-yellow-700 border-yellow-300',
+                            ],
+                            'exclusif' => [
+                                'label' => ' Exclusifs',
+                                'style' => 'bg-[#C9A961]/15 text-[#8B6914] border-[#C9A961]/50',
+                            ],
+                        ];
+                    @endphp
+
+                    @foreach ($badges as $key => $badge)
+                        <a href="{{ route('boutique', array_merge(request()->except('badge', 'page'), ['badge' => $key])) }}"
+                            class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all border
+           {{ request('badge') == $key
+               ? $badge['style'] . ' shadow-md'
+               : 'bg-[#FBF8F3] text-gray-700 border-[#e5ddd5] hover:border-nissa-rose hover:text-nissa-rose' }}">
+                            {{ $badge['label'] }}
+                            @if (request('badge') == $key)
+                                <span class="text-xs">×</span>
+                            @endif
+                        </a>
+                    @endforeach
                 </div>
 
             </form>
@@ -259,14 +324,36 @@
 
                                 <!-- Badges -->
                                 <div class="absolute top-4 left-4 flex flex-col gap-2">
-                                    @if ($produit->prix_promo)
+                                    @if ($produit->badge)
+                                        @php
+                                            $badgeStyles = [
+                                                'nouveau' =>
+                                                    'bg-blue-500/15 text-blue-700 border-blue-300 backdrop-blur-sm',
+                                                'promo' => 'bg-red-500/15 text-red-700 border-red-300 backdrop-blur-sm',
+                                                'bestseller' =>
+                                                    'bg-yellow-500/15 text-yellow-700 border-yellow-300 backdrop-blur-sm',
+                                                'exclusif' =>
+                                                    'bg-[#C9A961]/15 text-[#8B6914] border-[#C9A961]/50 backdrop-blur-sm',
+                                            ];
+                                            $badgeLabels = [
+                                                'nouveau' => ' Nouveau',
+                                                'promo' => ' Promo',
+                                                'bestseller' => ' Bestseller',
+                                                'exclusif' => ' Exclusif',
+                                            ];
+                                        @endphp
                                         <span
-                                            class="bg-nissa-rose text-white px-3 py-1 rounded-full text-[11px] font-semibold shadow-sm">
+                                            class="px-3 py-1 rounded-full text-[11px] font-semibold border {{ $badgeStyles[$produit->badge] ?? 'bg-gray-500/15 text-gray-700 border-gray-300' }}">
+                                            {{ $badgeLabels[$produit->badge] ?? ucfirst($produit->badge) }}
+                                        </span>
+                                    @elseif ($produit->prix_promo)
+                                        <span
+                                            class="bg-nissa-rose/15 text-nissa-rose border border-nissa-rose/30 backdrop-blur-sm px-3 py-1 rounded-full text-[11px] font-semibold">
                                             -{{ round((($produit->prix_base - $produit->prix_promo) / $produit->prix_base) * 100) }}%
                                         </span>
                                     @else
                                         <span
-                                            class="bg-white/95 backdrop-blur text-nissa-choco px-3 py-1 rounded-full text-[11px] font-semibold shadow-sm">
+                                            class="bg-white/80 backdrop-blur-sm text-nissa-choco border border-gray-200 px-3 py-1 rounded-full text-[11px] font-semibold">
                                             Nissa
                                         </span>
                                     @endif

@@ -211,7 +211,7 @@
                             <div class="flex flex-wrap gap-2 mt-3">
                                 <span class="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-700">MTN MoMo</span>
                                 <span class="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-700">Moov Money</span>
-                                <span class="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-700">Celtis Cash</span>
+                                {{-- <span class="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-700">Celtis Cash</span> --}}
                             </div>
                             <p class="text-xs text-gray-500 mt-3">
                                  Vous n'aurez qu'à valider le paiement sur votre téléphone pour confirmer la commande.
