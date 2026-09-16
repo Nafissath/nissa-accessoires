@@ -94,7 +94,7 @@
                                 $messageClient .= "Merci pour votre commande *" . $commande->numero_commande . "* chez Nissa Accessoires !\n\n";
                                 $messageClient .= " *Total : " . number_format($commande->total, 0, ',', ' ') . " FCFA*\n\n";
                                 $messageClient .= " Votre commande sera préparée avec soin dans notre atelier.\n\n";
-                                $messageClient .= "Pour procéder au paiement Mobile Money (MTN MoMo, Moov Money ou Celtis Cash), veuillez nous confirmer que vous êtes disponible.\n\n";
+                                $messageClient .= "Pour procéder au paiement Mobile Money (MTN MoMo, Moov Money )  ou carte bancaire, veuillez nous confirmer que vous êtes disponible.\n\n";
                                 $messageClient .= "À très vite !\n";
                                 $messageClient .= "Nissa Accessoires 🌸";
                                 $whatsappClient = preg_replace('/[^0-9]/', '', $commande->whatsapp);

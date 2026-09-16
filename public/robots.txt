@@ -1,2 +1,8 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin/
+Disallow: /panier
+Disallow: /commande
+Disallow: /favoris
+
+Sitemap: https://www.nissa-accessoires.com/sitemap.xml
