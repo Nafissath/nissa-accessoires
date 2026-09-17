@@ -11,6 +11,7 @@ use App\Models\VarianteProduit;
 use App\Models\Couleur;
 use App\Models\Taille;
 use App\Models\Matiere;
+use App\Helpers\ImageHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -83,26 +84,32 @@ class ProduitController extends Controller
             'est_en_avant' => $request->has('est_en_avant'),
         ]);
 
-        // Upload images
+        // ✅ Upload images AVEC COMPRESSION
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $image) {
-                $path = $image->store('produits', 'public');
+                // Image principale compressée
+                $filename = 'produits/' . uniqid() . '.webp';
+                \App\Helpers\ImageHelper::compressAndSave($image, $filename, 80, 1200);
+
+                // Miniature
+                $thumbFilename = 'produits/thumbs/' . uniqid() . '.webp';
+                \App\Helpers\ImageHelper::generateThumbnail($image, $thumbFilename, 400, 75);
+
                 ImageProduit::create([
                     'produit_id' => $produit->id,
-                    'chemin' => $path,
+                    'chemin' => $filename,
                     'est_principale' => $index === 0,
                 ]);
             }
         }
 
-        // Créer les variantes
+        // Créer les variantes (code identique à avant)
         if ($request->has('variantes')) {
             foreach ($request->variantes as $index => $varData) {
                 if (empty($varData['couleurs']) && empty($varData['taille_id']) && empty($varData['matiere_id'])) {
                     continue;
                 }
 
-                // Gérer la couleur principale
                 $couleurId = null;
                 $couleurPrincipale = $varData['couleurs'][0] ?? null;
 
@@ -118,7 +125,6 @@ class ProduitController extends Controller
                     $couleurId = $couleur->id;
                 }
 
-                // Gérer les couleurs secondaires
                 $couleursSecondaires = [];
                 if (!empty($varData['couleurs'])) {
                     foreach (array_slice($varData['couleurs'], 1) as $couleurSec) {
@@ -153,7 +159,6 @@ class ProduitController extends Controller
             }
         }
 
-        // ✅ Synchroniser le prix de base avec le prix minimum des variantes
         $produit->refresh();
         if ($produit->variantes->count() > 0) {
             $prixVariantes = $produit->variantes
@@ -224,10 +229,7 @@ class ProduitController extends Controller
     {
         try {
             Log::info('=== DÉBUT MISE À JOUR PRODUIT ===');
-            Log::info('Produit ID: ' . $produit->id);
-            Log::info('Données reçues:', $request->all());
 
-            // Validation
             $validated = $request->validate([
                 'nom' => 'required|string|max:255',
                 'prix_base' => 'required|integer|min:0',
@@ -237,9 +239,6 @@ class ProduitController extends Controller
                 'variantes' => 'nullable|array',
             ]);
 
-            Log::info('Validation OK');
-
-            // Mise à jour du produit
             $produit->update([
                 'nom' => $request->nom,
                 'description_courte' => $request->description_courte,
@@ -254,40 +253,33 @@ class ProduitController extends Controller
                 'est_en_avant' => $request->has('est_en_avant'),
             ]);
 
-            Log::info('Produit mis à jour');
-
-            // Upload images
+            // ✅ Upload images AVEC COMPRESSION
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
-                    $path = $image->store('produits', 'public');
+                    $filename = 'produits/' . uniqid() . '.webp';
+                    ImageHelper::compressAndSave($image, $filename, 80, 1200);
+
+                    $thumbFilename = 'produits/thumbs/' . uniqid() . '.webp';
+                    ImageHelper::generateThumbnail($image, $thumbFilename, 400, 75);
+
                     ImageProduit::create([
                         'produit_id' => $produit->id,
-                        'chemin' => $path,
+                        'chemin' => $filename,
                         'est_principale' => $produit->images()->count() === 0,
                     ]);
                 }
-                Log::info('Images uploadées');
             }
 
             // Gestion des variantes
             if ($request->has('variantes')) {
-                Log::info('Traitement des variantes', ['count' => count($request->variantes)]);
-
                 $variantesIds = array_filter(array_column($request->variantes, 'id'));
-                Log::info('Variantes IDs existantes:', $variantesIds);
-
                 $produit->variantes()->whereNotIn('id', $variantesIds)->delete();
-                Log::info('Anciennes variantes supprimées');
 
                 foreach ($request->variantes as $index => $varData) {
-                    Log::info("Traitement variante #$index", $varData);
-
                     if (empty($varData['couleurs']) && empty($varData['taille_id']) && empty($varData['matiere_id'])) {
-                        Log::info("Variante #$index vide, on skip");
                         continue;
                     }
 
-                    // Couleur principale
                     $couleurId = null;
                     $couleurPrincipale = $varData['couleurs'][0] ?? null;
 
@@ -301,10 +293,8 @@ class ProduitController extends Controller
                             ]
                         );
                         $couleurId = $couleur->id;
-                        Log::info('Couleur principale créée/trouvée', ['id' => $couleurId]);
                     }
 
-                    // Couleurs secondaires
                     $couleursSecondaires = [];
                     if (!empty($varData['couleurs'])) {
                         foreach (array_slice($varData['couleurs'], 1) as $couleurSec) {
@@ -335,21 +325,16 @@ class ProduitController extends Controller
                         'actif' => true,
                     ];
 
-                    Log::info('Données variante:', $varianteData);
-
                     if (!empty($varData['id'])) {
                         VarianteProduit::where('id', $varData['id'])->update($varianteData);
-                        Log::info("Variante #{$varData['id']} mise à jour");
                     } else {
                         $varianteData['produit_id'] = $produit->id;
                         $varianteData['par_defaut'] = $index === 0;
                         VarianteProduit::create($varianteData);
-                        Log::info("Nouvelle variante créée");
                     }
                 }
             }
 
-            // Synchronisation prix
             $produit->refresh();
             if ($produit->variantes->count() > 0) {
                 $prixVariantes = $produit->variantes
@@ -360,20 +345,14 @@ class ProduitController extends Controller
                 if ($prixVariantes->isNotEmpty()) {
                     $prixMin = $prixVariantes->min();
                     $produit->update(['prix_base' => $prixMin]);
-                    Log::info("Prix base synchronisé: $prixMin");
                 }
             }
-
-            Log::info('=== FIN MISE À JOUR RÉUSSIE ===');
 
             return redirect()->route('admin.produits.index')
                 ->with('success', 'Produit "' . $produit->nom . '" mis à jour !');
 
         } catch (\Exception $e) {
-            Log::error('=== ERREUR MISE À JOUR ===');
-            Log::error($e->getMessage());
-            Log::error($e->getTraceAsString());
-
+            Log::error('Erreur mise à jour produit : ' . $e->getMessage());
             return back()->with('error', 'Erreur: ' . $e->getMessage());
         }
     }
@@ -381,7 +360,7 @@ class ProduitController extends Controller
     public function supprimer(Produit $produit)
     {
         foreach ($produit->images as $image) {
-            Storage::disk('public')->delete($image->chemin);
+            ImageHelper::delete($image->chemin);
         }
         $produit->delete();
 
@@ -389,15 +368,14 @@ class ProduitController extends Controller
             ->with('success', 'Produit supprimé !');
     }
 
-    public function supprimerImage($imageId)
-    {
-        $image = ImageProduit::findOrFail($imageId);
-        Storage::disk('public')->delete($image->chemin);
-        $image->delete();
+   public function supprimerImage($imageId)
+{
+    $image = ImageProduit::findOrFail($imageId);
+    \App\Helpers\ImageHelper::delete($image->chemin);
+    $image->delete();
 
-        return back()->with('success', 'Image supprimée');
-    }
-
+    return back()->with('success', 'Image supprimée');
+}
     public function imagePrincipale($imageId)
     {
         $image = ImageProduit::findOrFail($imageId);
@@ -405,6 +383,29 @@ class ProduitController extends Controller
         $image->update(['est_principale' => true]);
 
         return back()->with('success', 'Image principale mise à jour');
+    }
+
+    public function ajouterVariante(Request $request, Produit $produit)
+    {
+        $request->validate([
+            'couleur_id' => 'nullable|exists:couleurs,id',
+            'taille_id' => 'nullable|exists:tailles,id',
+            'matiere_id' => 'nullable|exists:matieres,id',
+            'prix' => 'nullable|integer|min:0',
+            'stock' => 'required|integer|min:0',
+        ]);
+
+        VarianteProduit::create([
+            'produit_id' => $produit->id,
+            'couleur_id' => $request->couleur_id,
+            'taille_id' => $request->taille_id,
+            'matiere_id' => $request->matiere_id,
+            'prix' => $request->prix,
+            'stock' => $request->stock,
+            'actif' => true,
+        ]);
+
+        return back()->with('success', 'Variante ajoutée !');
     }
 
     public function supprimerVariante(VarianteProduit $variante)

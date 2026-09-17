@@ -9,24 +9,22 @@ class AccueilController extends Controller
 {
     public function index()
     {
-        // Prendre les 4 derniers produits actifs (badge "Nouveau")
         $produitsEnAvant = Produit::where('est_actif', true)
-            ->with([
-                'categorie',
-                'images',
-                'variantes.couleur',
-                'variantes.taille',
-                'variantes.matiere'
-            ])
+            ->with(['categorie', 'images', 'variantes.couleur', 'variantes.taille', 'variantes.matiere'])
             ->latest()
             ->take(4)
             ->get();
 
-        $collections = Collection::where('actif', true)->limit(4)->get();
+        // ✅ Collections actives avec leur premier produit (pour avoir une image)
+        $collections = Collection::where('actif', true)
+            ->with(['produits' => function ($query) {
+                $query->where('est_actif', true)
+                    ->with('images')
+                    ->limit(1);
+            }])
+            ->limit(3)
+            ->get();
 
-        return view('accueil.index', [
-            'produitsEnAvant' => $produitsEnAvant,
-            'collections' => $collections,
-        ]);
+        return view('accueil.index', compact('produitsEnAvant', 'collections'));
     }
 }

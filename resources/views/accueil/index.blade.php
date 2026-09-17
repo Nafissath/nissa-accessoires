@@ -228,7 +228,7 @@
         </div>
     </section>
 
-    <!-- ======================== CATÉGORIES ======================== -->
+    <!-- ======================== COLLECTIONS DYNAMIQUES ======================== -->
     <section class="py-24 bg-nissa-cream relative">
         <div class="max-w-7xl mx-auto px-4">
             <div class="text-center mb-16">
@@ -236,88 +236,95 @@
                 <h2 class="text-4xl md:text-6xl font-bold mt-3 mb-4" style="font-family: 'Playfair Display', serif;">
                     Explorez nos <span class="italic text-nissa-rose">collections</span>
                 </h2>
-                <p class="text-gray-600 max-w-2xl mx-auto text-lg">Chaque collection raconte une histoire, créée avec des
-                    matières nobles et un soin particulier</p>
+                <p class="text-gray-600 max-w-2xl mx-auto text-lg">
+                    Chaque collection raconte une histoire, créée avec des matières nobles et un soin particulier
+                </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Chouchous -->
-                <a href="{{ route('categorie', 'chouchous') }}"
-                    class="group relative overflow-hidden rounded-3xl aspect-[3/4] shadow-xl hover:shadow-2xl transition-all duration-500">
-                    <img src="https://images.unsplash.com/photo-1599643477877-530eb83abc8e?w=800&q=90"
-                        alt="Chouchous en satin"
-                        class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition duration-1000">
-                    <div class="absolute inset-0 bg-gradient-to-t from-nissa-choco via-nissa-choco/40 to-transparent">
-                    </div>
-                    <div
-                        class="absolute inset-0 bg-gradient-to-tr from-nissa-rose/0 via-transparent to-nissa-rose/30 opacity-0 group-hover:opacity-100 transition duration-500">
-                    </div>
-                    <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
-                        <span
-                            class="inline-block px-3 py-1 bg-nissa-rose text-white text-xs uppercase tracking-wider rounded-full mb-3">Collection</span>
-                        <h3 class="text-4xl font-bold mb-2" style="font-family: 'Playfair Display', serif;">Chouchous</h3>
-                        <p class="text-white/90 mb-4">Satin, soie, velours & laine</p>
-                        <span class="inline-flex items-center gap-2 text-sm font-medium group-hover:gap-3 transition-all">
-                            Découvrir
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                            </svg>
-                        </span>
-                    </div>
-                </a>
+            @if ($collections->count() > 0)
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    @foreach ($collections as $index => $collection)
+                        @php
+                            // Récupérer l'image du premier produit de la collection
+$premierProduit = $collection->produits->first();
+$imageCollection = null;
+if ($premierProduit && $premierProduit->images->count() > 0) {
+    $img =
+        $premierProduit->images->where('est_principale', true)->first() ??
+        $premierProduit->images->first();
+    $imageCollection = str_starts_with($img->chemin, 'http')
+        ? $img->chemin
+        : asset('storage/' . $img->chemin);
+}
 
-                <!-- Crochet -->
-                <a href="{{ route('categorie', 'sacs') }}"
-                    class="group relative overflow-hidden rounded-3xl aspect-[3/4] shadow-xl hover:shadow-2xl transition-all duration-500 md:mt-12">
-                    <img src="https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800&q=90"
-                        alt="Sacs au crochet"
-                        class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition duration-1000">
-                    <div class="absolute inset-0 bg-gradient-to-t from-nissa-choco via-nissa-choco/40 to-transparent">
-                    </div>
-                    <div
-                        class="absolute inset-0 bg-gradient-to-tr from-nissa-sauge/0 via-transparent to-nissa-sauge/30 opacity-0 group-hover:opacity-100 transition duration-500">
-                    </div>
-                    <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
-                        <span
-                            class="inline-block px-3 py-1 bg-nissa-sauge text-white text-xs uppercase tracking-wider rounded-full mb-3">Collection</span>
-                        <h3 class="text-4xl font-bold mb-2" style="font-family: 'Playfair Display', serif;">Crochet</h3>
-                        <p class="text-white/90 mb-4">Sacs, trousses & accessoires</p>
-                        <span class="inline-flex items-center gap-2 text-sm font-medium group-hover:gap-3 transition-all">
-                            Découvrir
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                            </svg>
-                        </span>
-                    </div>
-                </a>
+// Couleur alternée
+$colors = ['nissa-rose', 'nissa-sauge', 'nissa-gold'];
+                            $color = $colors[$index % 3];
+                        @endphp
 
-                <!-- Packs -->
-                <a href="{{ route('packs.index') }}"
-                    class="group relative overflow-hidden rounded-3xl aspect-[3/4] shadow-xl hover:shadow-2xl transition-all duration-500">
-                    <img src="https://images.unsplash.com/photo-1512428813834-c702c7702b78?w=800&q=90" alt="Packs cadeaux"
-                        class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition duration-1000">
-                    <div class="absolute inset-0 bg-gradient-to-t from-nissa-choco via-nissa-choco/40 to-transparent">
-                    </div>
-                    <div
-                        class="absolute inset-0 bg-gradient-to-tr from-nissa-gold/0 via-transparent to-nissa-gold/30 opacity-0 group-hover:opacity-100 transition duration-500">
-                    </div>
-                    <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
-                        <span
-                            class="inline-block px-3 py-1 bg-nissa-gold text-white text-xs uppercase tracking-wider rounded-full mb-3">Collection</span>
-                        <h3 class="text-4xl font-bold mb-2" style="font-family: 'Playfair Display', serif;">Packs</h3>
-                        <p class="text-white/90 mb-4">Offres spéciales & cadeaux</p>
-                        <span class="inline-flex items-center gap-2 text-sm font-medium group-hover:gap-3 transition-all">
-                            Découvrir
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                            </svg>
-                        </span>
-                    </div>
-                </a>
-            </div>
+                        <a href="{{ route('cible', $collection->slug) }}"
+                            class="group relative overflow-hidden rounded-3xl aspect-[3/4] shadow-xl hover:shadow-2xl transition-all duration-500 {{ $index === 1 ? 'md:mt-12' : '' }}">
+
+                            @if ($imageCollection)
+                                <img src="{{ $imageCollection }}" alt="Collection {{ $collection->nom }}"
+                                    class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition duration-1000">
+                            @else
+                                <div
+                                    class="absolute inset-0 w-full h-full bg-gradient-to-br from-nissa-choco to-nissa-rose flex items-center justify-center">
+                                    <span class="text-white/30 text-8xl" style="font-family: 'Playfair Display', serif;">
+                                        {{ strtoupper(substr($collection->nom, 0, 1)) }}
+                                    </span>
+                                </div>
+                            @endif
+
+                            <div
+                                class="absolute inset-0 bg-gradient-to-t from-nissa-choco via-nissa-choco/40 to-transparent">
+                            </div>
+                            <div
+                                class="absolute inset-0 bg-gradient-to-tr from-{{ $color }}/0 via-transparent to-{{ $color }}/30 opacity-0 group-hover:opacity-100 transition duration-500">
+                            </div>
+
+                            <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
+                                <span
+                                    class="inline-block px-3 py-1 bg-{{ $color }} text-white text-xs uppercase tracking-wider rounded-full mb-3">
+                                    Collection
+                                </span>
+                                <h3 class="text-4xl font-bold mb-2" style="font-family: 'Playfair Display', serif;">
+                                    {{ $collection->nom }}
+                                </h3>
+                                @if ($collection->description)
+                                    <p class="text-white/90 mb-4">{{ Str::limit($collection->description, 50) }}</p>
+                                @else
+                                    <p class="text-white/90 mb-4">{{ $collection->produits->count() }} produit(s)</p>
+                                @endif
+                                <span
+                                    class="inline-flex items-center gap-2 text-sm font-medium group-hover:gap-3 transition-all">
+                                    Découvrir
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </a>
+                    @endforeach
+                </div>
+
+                <div class="text-center mt-12">
+                    <a href="{{ route('boutique') }}"
+                        class="inline-flex items-center gap-2 text-nissa-choco hover:text-nissa-rose transition">
+                        Voir toutes les collections
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
+                </div>
+            @else
+                <div class="text-center py-16">
+                    <p class="text-gray-500">Les collections arrivent bientôt...</p>
+                </div>
+            @endif
         </div>
     </section>
 
@@ -503,7 +510,7 @@
             </div>
         </div>
     </section>
-    
+
     {{-- ======================== CTA FINAL (simple) ======================== --}}
     <section class="py-20 bg-[#FBF8F3]">
         <div class="max-w-4xl mx-auto px-4 text-center">

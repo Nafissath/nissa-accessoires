@@ -11,11 +11,11 @@ class AdminSeeder extends Seeder
     public function run(): void
     {
         Admin::firstOrCreate(
-            ['email' => 'nissa.accessoires@gmail.com'],
+            ['email' => 'admin@nissa.com'],
             [
-                'nom' => 'Nafissath',
-                'email' => 'nissa.accessoires@gmail.com',
-                'password' => Hash::make('r'), // ⚠️ Change ce mot de passe !
+                'nom' => 'Admin Nissa',
+                'email' => 'admin@nissa.com',
+                'password' => Hash::make('admin123'), // Mot de passe de démo - À CHANGER en production
             ]
         );
     }
