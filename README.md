@@ -329,7 +329,7 @@ php artisan view:cache
 
 ---
 
-## 👩‍💼 Autrice
+##  Autrice
 
 **Nafissath** — Fondatrice et créatrice de NISSA Accessoires.
 

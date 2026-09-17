@@ -15,7 +15,7 @@ class AccueilController extends Controller
             ->take(4)
             ->get();
 
-        // ✅ Collections actives avec leur premier produit (pour avoir une image)
+        //  Collections actives avec leur premier produit (pour avoir une image)
         $collections = Collection::where('actif', true)
             ->with(['produits' => function ($query) {
                 $query->where('est_actif', true)

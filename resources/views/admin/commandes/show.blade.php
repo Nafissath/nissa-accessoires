@@ -250,7 +250,7 @@
                     }
                     $messageClient = 'Bonjour ' . ($commande->cliente->prenom ?? '') . " ! 🌸\n\n";
                     $messageClient .= 'Concernant votre commande *' . $commande->numero_commande . "* :\n\n";
-                    $messageClient .= '💰 *Total : ' . number_format($commande->total, 0, ',', ' ') . " FCFA*\n\n";
+                    $messageClient .= ' *Total : ' . number_format($commande->total, 0, ',', ' ') . " FCFA*\n\n";
                     $messageClient .=
                         "Nous préparons votre commande avec soin. Nous vous tiendrons informée de l'avancement.\n\n";
                     $messageClient .= 'Nissa Accessoires 🌸';

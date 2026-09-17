@@ -42,7 +42,7 @@
     {{-- INFOS PRODUIT --}}
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
         <h2 class="text-lg font-semibold text-nissa-choco mb-4" style="font-family: 'Playfair Display', serif;">
-            📝 Informations du produit
+             Informations du produit
         </h2>
 
         @if ($produit->images->count() > 0)
@@ -132,15 +132,15 @@
                 <select name="badge"
                     class="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:border-nissa-rose transition">
                     <option value="">-- Aucun --</option>
-                    <option value="nouveau" {{ old('badge', $produit->badge) == 'nouveau' ? 'selected' : '' }}>🆕 Nouveau</option>
-                    <option value="promo" {{ old('badge', $produit->badge) == 'promo' ? 'selected' : '' }}>🏷️ Promo</option>
-                    <option value="bestseller" {{ old('badge', $produit->badge) == 'bestseller' ? 'selected' : '' }}>⭐ Bestseller</option>
-                    <option value="exclusif" {{ old('badge', $produit->badge) == 'exclusif' ? 'selected' : '' }}>💎 Exclusif</option>
+                    <option value="nouveau" {{ old('badge', $produit->badge) == 'nouveau' ? 'selected' : '' }}> Nouveau</option>
+                    <option value="promo" {{ old('badge', $produit->badge) == 'promo' ? 'selected' : '' }}> Promo</option>
+                    <option value="bestseller" {{ old('badge', $produit->badge) == 'bestseller' ? 'selected' : '' }}> Bestseller</option>
+                    <option value="exclusif" {{ old('badge', $produit->badge) == 'exclusif' ? 'selected' : '' }}> Exclusif</option>
                 </select>
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-nissa-choco mb-2">🎨 Nuances / Couleurs</label>
+                <label class="block text-sm font-medium text-nissa-choco mb-2"> Nuances / Couleurs</label>
                 <input type="text" name="nuances_couleurs" value="{{ old('nuances_couleurs', $produit->nuances_couleurs) }}"
                     placeholder="Ex: Rose poudré & Or"
                     class="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:border-nissa-rose transition">
@@ -162,12 +162,12 @@
                 <label class="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" name="est_actif" {{ old('est_actif', $produit->est_actif) ? 'checked' : '' }}
                         class="rounded border-gray-300 text-nissa-rose">
-                    <span class="text-sm text-nissa-choco">✅ Actif</span>
+                    <span class="text-sm text-nissa-choco"> Actif</span>
                 </label>
                 <label class="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" name="est_en_avant" {{ old('est_en_avant', $produit->est_en_avant ?? false) ? 'checked' : '' }}
                         class="rounded border-gray-300 text-nissa-rose">
-                    <span class="text-sm text-nissa-choco">⭐ En avant</span>
+                    <span class="text-sm text-nissa-choco"> En avant</span>
                 </label>
             </div>
         </div>
@@ -310,7 +310,7 @@
             class="px-6 py-3 border-2 border-gray-200 text-gray-700 rounded-2xl font-semibold hover:bg-gray-50 transition">Annuler</a>
         <button type="submit"
             class="px-6 py-3 bg-nissa-choco text-white rounded-2xl font-semibold hover:bg-nissa-rose transition shadow-lg flex-1 max-w-xs">
-            💾 Enregistrer les modifications
+             Enregistrer les modifications
         </button>
     </div>
 </form>

@@ -14,10 +14,10 @@
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-20">
             <h2 class="text-lg font-semibold text-nissa-choco mb-4">Coordonnées</h2>
             <div class="space-y-2 text-sm text-gray-600">
-                <p>📱 {{ $cliente->telephone }}</p>
-                <p>💬 {{ $cliente->whatsapp ?? '-' }}</p>
-                <p>📧 {{ $cliente->email ?? '-' }}</p>
-                <p>📍 {{ $cliente->adresse ?? '-' }}</p>
+                <p> {{ $cliente->telephone }}</p>
+                <p> {{ $cliente->whatsapp ?? '-' }}</p>
+                <p> {{ $cliente->email ?? '-' }}</p>
+                <p> {{ $cliente->adresse ?? '-' }}</p>
             </div>
             @php
                 $wa = preg_replace('/[^0-9]/', '', $cliente->whatsapp ?? $cliente->telephone);

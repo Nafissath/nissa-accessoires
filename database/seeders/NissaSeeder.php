@@ -238,6 +238,6 @@ class NissaSeeder extends Seeder
             }
         }
 
-        $this->command->info('✅ 8 produits créés avec images et variantes !');
+        $this->command->info(' 8 produits créés avec images et variantes !');
     }
 }

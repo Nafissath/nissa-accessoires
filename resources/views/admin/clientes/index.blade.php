@@ -41,7 +41,7 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-600">
-                            <p>📱 {{ $cliente->telephone }}</p>
+                            <p> {{ $cliente->telephone }}</p>
                             @if ($cliente->email)<p class="text-xs text-gray-400">📧 {{ $cliente->email }}</p>@endif
                         </td>
                         <td class="px-6 py-4">
