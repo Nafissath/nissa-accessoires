@@ -30,13 +30,15 @@ class ProduitController extends Controller
         $couleursDisponibles = $produit->variantes->pluck('couleur')->filter()->unique('id');
         $taillesDisponibles = $produit->variantes->pluck('taille')->filter()->unique('id');
         $matieresDisponibles = $produit->variantes->pluck('matiere')->filter()->unique('id');
+        $avis = $produit->avis()->where('est_approuve', true)->latest()->get();
 
         return view('produit.afficher', compact(
-            'produit', 
+            'produit',
             'produitsSimilaires',
             'couleursDisponibles',
             'taillesDisponibles',
-            'matieresDisponibles'
+            'matieresDisponibles',
+            'avis'
         ));
     }
 }

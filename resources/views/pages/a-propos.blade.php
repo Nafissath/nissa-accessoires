@@ -249,7 +249,7 @@
 {{-- =========================================================
      LA FONDATRICE
 ========================================================= --}}
-<section class="bg-white py-20 md:py-28">
+{{-- <section class="bg-white py-20 md:py-28">
 
     <div class="max-w-6xl mx-auto px-5 sm:px-8">
 
@@ -303,7 +303,7 @@
             <div class="order-1 md:order-2">
 
                 <div
-                    class="relative aspect-[4/5] rounded-3xl overflow-hidden
+                    class="relative aspect-4/5 rounded-3xl overflow-hidden
                            bg-[#F4EDE5] border border-[#E9DED4]"
                 >
 
@@ -354,7 +354,139 @@
 
     </div>
 
+</section> --}}
+
+{{-- =========================================================
+     LA FONDATRICE
+========================================================= --}}
+<section class="bg-white py-20 md:py-28">
+
+    <div class="max-w-6xl mx-auto px-5 sm:px-8">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+            {{-- Texte à gauche --}}
+            <div class="order-2 md:order-1">
+
+                <p class="text-xs uppercase tracking-[0.3em] text-nissa-rose font-semibold mb-5">
+                    La fondatrice
+                </p>
+
+                <h2
+                    class="text-4xl md:text-5xl font-medium mb-6 text-nissa-choco"
+                    style="font-family:'Playfair Display', serif;"
+                >
+                    Une créatrice derrière NISSA
+                </h2>
+
+                <p class="text-gray-700 leading-relaxed mb-5">
+                    Derrière NISSA se trouve une envie de créer,
+                    d'imaginer des pièces originales et de construire
+                    progressivement un univers qui associe créativité,
+                    élégance et accessibilité.
+                </p>
+
+                <p class="text-gray-700 leading-relaxed mb-5">
+                    Chaque étape de la marque est l'occasion d'expérimenter,
+                    d'apprendre et de faire évoluer les collections
+                    en fonction des idées et des envies de création.
+                </p>
+
+                <p class="text-gray-700 leading-relaxed">
+                    Aujourd'hui, cette vision se traduit à travers
+                    des accessoires et des créations artisanales
+                    imaginés avec attention.
+                </p>
+
+                <div class="mt-8 flex items-center gap-4">
+
+                    <span class="w-12 h-px bg-nissa-rose"></span>
+
+                    <span class="text-sm uppercase tracking-[0.2em] text-nissa-choco">
+                        Nafissath
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            {{-- Image à droite (placeholder élégant) --}}
+            <div class="order-1 md:order-2">
+
+                <div
+                    class="relative aspect-[4/5] rounded-3xl overflow-hidden
+                           bg-gradient-to-br from-nissa-rose/20 via-nissa-cream to-nissa-gold/20
+                           border border-nissa-rose/20 shadow-xl"
+                >
+
+                    {{-- Décorations circulaires --}}
+                    <div class="absolute top-8 left-8 w-16 h-16 rounded-full bg-nissa-rose/10"></div>
+                    <div class="absolute bottom-12 right-8 w-24 h-24 rounded-full bg-nissa-gold/10"></div>
+                    <div class="absolute top-1/3 right-12 w-12 h-12 rounded-full bg-nissa-choco/5"></div>
+
+                    {{-- Contenu centré --}}
+                    <div class="absolute inset-0 flex flex-col items-center justify-center p-10 text-center">
+
+                        <div
+                            class="w-32 h-32 rounded-full bg-white/80 backdrop-blur
+                                   flex items-center justify-center mb-6 shadow-xl"
+                        >
+                            <span
+                                class="text-5xl font-bold text-nissa-rose"
+                                style="font-family: 'Playfair Display', serif;"
+                            >
+                                N
+                            </span>
+                        </div>
+
+                        <p
+                            class="text-3xl text-nissa-choco italic"
+                            style="font-family:'Playfair Display', serif;"
+                        >
+                            Nafissath
+                        </p>
+
+                        <p class="mt-2 text-sm text-gray-500">
+                            Fondatrice & créatrice
+                        </p>
+
+                        <div class="mt-6 flex items-center gap-2">
+                            <span class="w-8 h-px bg-nissa-rose"></span>
+                            <span class="text-[10px] uppercase tracking-[0.3em] text-gray-400">
+                                Bénin
+                            </span>
+                            <span class="w-8 h-px bg-nissa-rose"></span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </section>
+
+{{-- <div class="order-1 md:order-2">
+    <div class="relative">
+        Photo principale 
+        <img
+            src="{{ asset('images/fondatrice.jpg') }}"
+            alt="Nafissath, fondatrice de Nissa Accessoires"
+            class="relative rounded-3xl shadow-2xl w-full object-cover aspect-[4/5]"
+        >
+
+        Badge flottant (optionnel) 
+        <div class="absolute -bottom-6 -right-6 bg-white rounded-2xl shadow-xl p-4 hidden md:block">
+            <p class="text-3xl font-bold text-nissa-choco" style="font-family: 'Playfair Display', serif;">N</p>
+            <p class="text-xs text-gray-500 uppercase tracking-wider">Nafissath</p>
+        </div>
+    </div>
+</div> --}}
 
 
 {{-- =========================================================
