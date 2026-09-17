@@ -28,7 +28,7 @@ class Produit extends Model
         'badge',
         'nuances_couleurs',
     ];
-    
+
 
     protected $casts = [
         'est_pack' => 'boolean',
@@ -62,5 +62,13 @@ class Produit extends Model
         return $this->belongsToMany(Cible::class, 'cible_produit', 'produit_id', 'cible_id');
     }
 
-    
+    public function avis()
+    {
+        return $this->hasMany(AvisProduit::class);
+    }
+
+    public function avisApprouves()
+    {
+        return $this->hasMany(AvisProduit::class)->where('est_approuve', true);
+    }
 }

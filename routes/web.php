@@ -34,6 +34,7 @@ Route::get('/cible/{slug}', [BoutiqueController::class, 'cible'])->name('cible')
 Route::get('/recherche', [BoutiqueController::class, 'recherche'])->name('recherche');
 
 Route::get('/produit/{slug}', [ProduitController::class, 'afficher'])->name('produit.afficher');
+Route::post('/produit/{slug}/avis', [App\Http\Controllers\AvisController::class, 'store'])->name('avis.store');
 
 Route::get('/packs', [PackController::class, 'index'])->name('packs.index');
 Route::get('/pack/{slug}', [PackController::class, 'afficher'])->name('packs.afficher');
@@ -55,6 +56,7 @@ Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'inde
 // Newsletter
 Route::post('/newsletter', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
 Route::get('/newsletter/desinscription/{token}', [App\Http\Controllers\NewsletterController::class, 'desinscription'])->name('newsletter.desinscription');
+
 
 // Panier
 Route::prefix('panier')->group(function () {
@@ -137,6 +139,12 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
     Route::get('clientes', [\App\Http\Controllers\Admin\ClienteController::class, 'index'])->name('clientes.index');
     Route::get('clientes/{cliente}', [\App\Http\Controllers\Admin\ClienteController::class, 'show'])->name('clientes.show');
 
+        // Avis clients
+    Route::get('avis', [\App\Http\Controllers\Admin\AvisController::class, 'index'])->name('avis.index');
+    Route::patch('avis/{avis}/approuver', [\App\Http\Controllers\Admin\AvisController::class, 'approuver'])->name('avis.approuver');
+    Route::patch('avis/{avis}/refuser', [\App\Http\Controllers\Admin\AvisController::class, 'refuser'])->name('avis.refuser');
+    Route::delete('avis/{avis}', [\App\Http\Controllers\Admin\AvisController::class, 'supprimer'])->name('avis.supprimer');
+    
     // Attributs
     Route::get('attributs', [\App\Http\Controllers\Admin\AttributController::class, 'index'])->name('attributs.index');
     Route::post('attributs', [\App\Http\Controllers\Admin\AttributController::class, 'enregistrer'])->name('attributs.enregistrer');
