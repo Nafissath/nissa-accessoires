@@ -52,6 +52,10 @@ Route::get('/livraison', [PageController::class, 'livraison'])->name('pages.livr
 
 Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index']);
 
+// Newsletter
+Route::post('/newsletter', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
+Route::get('/newsletter/desinscription/{token}', [App\Http\Controllers\NewsletterController::class, 'desinscription'])->name('newsletter.desinscription');
+
 // Panier
 Route::prefix('panier')->group(function () {
     Route::get('/', [PanierController::class, 'index'])->name('panier.index');
@@ -142,4 +146,13 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
     // Paramètres
     Route::get('parametres', [\App\Http\Controllers\Admin\ParametreController::class, 'index'])->name('parametres.index');
     Route::put('parametres', [\App\Http\Controllers\Admin\ParametreController::class, 'update'])->name('parametres.update');
+
+    // Newsletter 
+    Route::get('newsletter', [\App\Http\Controllers\Admin\NewsletterController::class, 'index'])->name('newsletter.index');
+    Route::get('newsletter/creer', [\App\Http\Controllers\Admin\NewsletterController::class, 'creer'])->name('newsletter.creer');
+    Route::post('newsletter/envoyer', [\App\Http\Controllers\Admin\NewsletterController::class, 'envoyer'])->name('newsletter.envoyer');
+    Route::patch('newsletter/{abonne}/toggle', [\App\Http\Controllers\Admin\NewsletterController::class, 'toggle'])->name('newsletter.toggle');
+    Route::delete('newsletter/{abonne}', [\App\Http\Controllers\Admin\NewsletterController::class, 'supprimer'])->name('newsletter.supprimer');
+    Route::delete('newsletter/historique/{envoi}', [\App\Http\Controllers\Admin\NewsletterController::class, 'supprimerEnvoi'])->name('newsletter.supprimerEnvoi');
+    Route::get('newsletter/export', [\App\Http\Controllers\Admin\NewsletterController::class, 'export'])->name('newsletter.export');
 });
