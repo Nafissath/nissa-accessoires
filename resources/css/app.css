@@ -101,3 +101,5 @@ html, body {
         opacity: 0;
     }
 }
+
+[x-cloak] { display: none !important; }
