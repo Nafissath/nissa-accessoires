@@ -103,37 +103,71 @@ class BoutiqueController extends Controller
     }
 
     public function recherche(Request $request)
-{
-    $query = Produit::where('est_actif', true)
-        ->with(['categorie', 'images', 'variantes']);
+    {
+        $query = Produit::where('est_actif', true)
+            ->with(['categorie', 'images', 'variantes']);
 
-    if ($request->filled('q')) {
-        $terme = $request->q;
-        $query->where(function ($q) use ($terme) {
-            $q->where('nom', 'LIKE', "%{$terme}%")
-              ->orWhere('description_courte', 'LIKE', "%{$terme}%")
-              ->orWhereHas('categorie', function ($q2) use ($terme) {
-                  $q2->where('nom', 'LIKE', "%{$terme}%");
-              });
+        if ($request->filled('q')) {
+            $terme = $request->q;
+            $query->where(function ($q) use ($terme) {
+                $q->where('nom', 'LIKE', "%{$terme}%")
+                    ->orWhere('description_courte', 'LIKE', "%{$terme}%")
+                    ->orWhereHas('categorie', function ($q2) use ($terme) {
+                        $q2->where('nom', 'LIKE', "%{$terme}%");
+                    });
+            });
+        }
+
+        // Filtrer les produits sans stock
+        $query->where(function ($q) {
+            $q->whereHas('variantes', function ($v) {
+                $v->where('stock', '>', 0);
+            })->orWhereDoesntHave('variantes');
         });
+
+        $produits = $query->latest()->paginate(12)->withQueryString();
+        $categories = Categorie::where('actif', true)->get();
+
+        return view('boutique.recherche', [
+            'produits' => $produits,
+            'categories' => $categories,
+            'categorieActive' => null,
+            'title' => 'Recherche : ' . ($request->q ?? ''),
+            'description' => 'Résultats de recherche pour "' . ($request->q ?? '') . '" sur Nissa Accessoires'
+        ]);
     }
 
-    // Filtrer les produits sans stock
-    $query->where(function ($q) {
-        $q->whereHas('variantes', function ($v) {
-            $v->where('stock', '>', 0);
-        })->orWhereDoesntHave('variantes');
-    });
 
-    $produits = $query->latest()->paginate(12)->withQueryString();
-    $categories = Categorie::where('actif', true)->get();
+    public function suggestions(Request $request)
+    {
+        $q = trim($request->get('q', ''));
 
-    return view('boutique.recherche', [
-        'produits' => $produits,
-        'categories' => $categories,
-        'categorieActive' => null,
-        'title' => 'Recherche : ' . ($request->q ?? ''),
-        'description' => 'Résultats de recherche pour "' . ($request->q ?? '') . '" sur Nissa Accessoires'
-    ]);
-}
+        if (mb_strlen($q) < 2) {
+            return response()->json([]);
+        }
+
+        $produits = Produit::where('est_actif', true)
+            ->where(function ($query) use ($q) {
+                $query->where('nom', 'LIKE', "%{$q}%")
+                    ->orWhereHas('categorie', function ($c) use ($q) {
+                        $c->where('nom', 'LIKE', "%{$q}%");
+                    });
+            })
+            ->with('images')
+            ->limit(6)
+            ->get()
+            ->map(function ($p) {
+                $img = $p->images->where('est_principale', true)->first() ?? $p->images->first();
+                return [
+                    'nom' => $p->nom,
+                    'url' => route('produit.afficher', $p->slug),
+                    'prix' => number_format($p->prix_promo ?? $p->prix_base, 0, ',', ' ') . ' FCFA',
+                    'image' => $img
+                        ? (str_starts_with($img->chemin, 'http') ? $img->chemin : asset('storage/' . $img->chemin))
+                        : null,
+                ];
+            });
+
+        return response()->json($produits);
+    }
 }

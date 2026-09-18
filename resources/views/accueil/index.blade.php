@@ -1,7 +1,7 @@
 @extends('layouts.principal')
 
 @section('content')
-   
+
 
 
     <!-- ======================== HERO SECTION ======================== -->
@@ -100,22 +100,23 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Cheveux protégés -->
+                <!-- Matières nobles -->
                 <div
                     class="group bg-gradient-to-br from-white to-nissa-cream p-8 rounded-3xl border border-nissa-rose/20 hover:border-nissa-rose hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
                     <div
                         class="w-20 h-20 bg-gradient-to-br from-nissa-rose to-nissa-rose-dark rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg shadow-nissa-rose/30">
                         <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                                d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z">
                             </path>
                         </svg>
                     </div>
                     <h3 class="text-2xl font-bold mb-3 text-nissa-choco" style="font-family: 'Playfair Display', serif;">
-                        Cheveux protégés</h3>
-                    <p class="text-gray-600 leading-relaxed">Satin et soie de qualité pour réduire la casse, les fourches et
-                        préserver votre beauté naturelle.</p>
+                        Matières nobles</h3>
+                    <p class="text-gray-600 leading-relaxed">Satin, soie, velours et coton de qualité pour des créations
+                        élégantes et durables, pensées pour accompagner votre quotidien.</p>
                 </div>
+
 
                 <!-- Fait main -->
                 <div
@@ -134,20 +135,20 @@
                         artisanal authentique.</p>
                 </div>
 
-                <!-- Livraison -->
+                <!-- Livraison soignée -->
                 <div
                     class="group bg-gradient-to-br from-white to-nissa-cream p-8 rounded-3xl border border-nissa-gold/20 hover:border-nissa-gold hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
                     <div
                         class="w-20 h-20 bg-gradient-to-br from-nissa-gold to-amber-700 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg shadow-nissa-gold/30">
                         <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                         </svg>
                     </div>
                     <h3 class="text-2xl font-bold mb-3 text-nissa-choco" style="font-family: 'Playfair Display', serif;">
-                        Livraison rapide</h3>
-                    <p class="text-gray-600 leading-relaxed">Partout au Bénin avec suivi, et expédition en 24h pour Cotonou
-                        et environs.</p>
+                        Livraison soignée</h3>
+                    <p class="text-gray-600 leading-relaxed">Chaque commande est emballée avec amour et attention avant
+                        expédition. Livraison sécurisée à votre adresse.</p>
                 </div>
             </div>
         </div>

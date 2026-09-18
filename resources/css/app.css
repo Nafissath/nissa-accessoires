@@ -1,17 +1,49 @@
 @import "tailwindcss";
-/* Empêcher le scroll horizontal sur tout le site */
-html, body {
-    overflow-x: hidden;
-    max-width: 100vw;
+
+@import "tailwindcss";
+
+/* ANTI-TREMBLEMENT - Solution simple */
+html {
+    scrollbar-gutter: stable;
+    overflow-y: scroll;
 }
 
-/* Corriger les éléments qui pourraient dépasser */
+html, body {
+    overflow-x: hidden;
+}
+
 * {
     box-sizing: border-box;
 }
 
+/* Scrollbar fine et élégante aux couleurs Nissa */
+body {
+    scrollbar-width: thin;
+    scrollbar-color: #E8B4B8 transparent;
+}
+
+body::-webkit-scrollbar {
+    width: 8px;
+}
+
+body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #E8B4B8;
+    border-radius: 10px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+    background-color: #D98B92;
+}
+
+
+/* ============================================================
+   THÈME - COULEURS ET TYPOGRAPHIE
+============================================================ */
 @theme {
-    /* Couleurs plus vibrantes et saturées */
     --color-nissa-cream: #FBF8F3;
     --color-nissa-rose: #D98B92;
     --color-nissa-rose-dark: #C17078;
@@ -22,7 +54,10 @@ html, body {
     --font-display: "Playfair Display", serif;
 }
 
-/* Styles utilitaires personnalisés */
+
+/* ============================================================
+   COMPOSANTS UTILITAIRES
+============================================================ */
 @layer components {
     .btn-nissa {
         @apply inline-block bg-nissa-rose text-white px-6 py-3 rounded-full font-medium hover:bg-nissa-rose-dark transition shadow-lg hover:shadow-xl;
@@ -40,7 +75,10 @@ html, body {
     }
 }
 
-/* Masquer scrollbar mais garder scroll */
+
+/* ============================================================
+   SCROLLBAR MASQUÉE (pour éléments spécifiques)
+============================================================ */
 .scrollbar-hide::-webkit-scrollbar {
     display: none;
 }
@@ -52,16 +90,17 @@ html, body {
 
 /* ============================================================
    BOUTON WHATSAPP FLOTTANT
+   ⚠️ ANIMATION FLOTTANTE DÉSACTIVÉE (cause des repaints constants)
 ============================================================ */
 .whatsapp-float {
     position: fixed;
-    bottom: 50px;              /* Remonté (pas collé en bas) */
-    right: 24px;                /* Bien à droite */
+    bottom: 50px;
+    right: 24px;
     z-index: 999;
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: whatsapp-float 3s ease-in-out infinite;  /* Flotte doucement */
+    /* Animation supprimée pour éviter les repaints constants */
 }
 
 @media (max-width: 768px) {
@@ -71,17 +110,7 @@ html, body {
     }
 }
 
-/* Effet de flottement (monte et descend) */
-@keyframes whatsapp-float {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
-}
-
-/* Halo animé (pulsation) */
+/* Halo pulsation (conservé mais optimisé) */
 .whatsapp-pulse {
     position: absolute;
     inset: 0;
@@ -89,6 +118,7 @@ html, body {
     background: rgba(37, 211, 102, 0.4);
     animation: whatsapp-pulse 2s ease-out infinite;
     z-index: -1;
+    will-change: transform, opacity;
 }
 
 @keyframes whatsapp-pulse {
@@ -102,4 +132,37 @@ html, body {
     }
 }
 
-[x-cloak] { display: none !important; }
+
+/* ============================================================
+   ANIMATIONS AU SCROLL (uniquement opacity, jamais translate)
+============================================================ */
+.fade-in-on-scroll {
+    opacity: 0;
+    transition: opacity 800ms ease-out;
+}
+
+.fade-in-on-scroll.visible {
+    opacity: 1;
+}
+
+
+/* ============================================================
+   ALPINE.JS
+============================================================ */
+[x-cloak] { 
+    display: none !important; 
+}
+
+
+/* ============================================================
+   OPTIMISATIONS GPU POUR ÉLÉMENTS ANIMÉS
+============================================================ */
+header.sticky {
+    will-change: transform;
+}
+
+.group:hover img {
+    will-change: transform;
+}
+
+

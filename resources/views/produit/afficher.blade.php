@@ -118,21 +118,23 @@
                     <div class="mt-8 pt-8 border-t border-gray-200 space-y-4">
                         <div class="flex items-center gap-3 text-gray-600">
                             <svg class="w-5 h-5 text-nissa-sauge" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                             </svg>
-                            <span>Livraison rapide partout au Bénin</span>
+                            <span>Livraison soignée, emballage avec soin</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-gray-600">
+                            <svg class="w-5 h-5 text-nissa-sauge" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            </svg>
+                            <span>Paiement sécurisé, transactions protégées</span>
                         </div>
                         <div class="flex items-center gap-3 text-gray-600">
                             <svg class="w-5 h-5 text-nissa-sauge" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                             </svg>
-                            <span>Paiement Mobile Money sécurisé (MTN, Moov) ou carte bancaire</span>
-                        </div>
-                        <div class="flex items-center gap-3 text-gray-600">
-                            <svg class="w-5 h-5 text-nissa-sauge" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span>100% fait main avec amour</span>
+                            <span>100% fait main avec passion</span>
                         </div>
                     </div>
                 </div>
@@ -155,7 +157,7 @@
             ============================================================= --}}
             <div class="mt-16 max-w-4xl" x-data="{ note: 0 }">
                 <h2 class="text-3xl font-bold mb-6 text-nissa-choco" style="font-family: 'Playfair Display', serif;">
-                    Avis clientes
+                    Avis clients
                     @if ($avis->count() > 0)
                         <span class="text-lg font-normal text-gray-500">({{ $avis->count() }})</span>
                     @endif
@@ -214,7 +216,7 @@
                     </div>
                 @else
                     <p class="text-gray-500 mb-10">
-                        Aucun avis pour le moment. Soyez la première à partager votre expérience !
+                        Aucun avis pour le moment. Soyez le premier à partager votre expérience !
                     </p>
                 @endif
 

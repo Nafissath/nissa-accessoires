@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <!-- Fond rose Nissa -->
+    <rect width="100" height="100" rx="20" fill="#D98B92"/>
+    
+    <!-- Lettre N élégante en Playfair -->
+    <text x="50" y="72" 
+          font-family="'Playfair Display', Georgia, serif" 
+          font-size="70" 
+          font-weight="600"
+          fill="#FBF8F3" 
+          text-anchor="middle">N</text>
+</svg>

@@ -3,7 +3,7 @@
 @section('content')
 
     {{-- ============================================================
-     SECTIONS PACKS (SANS EN-TÊTE RÉPÉTITIF)
+     SECTIONS PACKS
 ============================================================= --}}
     <section class="py-12 md:py-16 bg-[#FDFBF7]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -30,7 +30,7 @@
                     </h1>
                 </div>
                 <p class="text-sm text-[#4A3525]/70 max-w-md">
-                    Des compositions avantageuses pensées pour la rentrée ou pour offrir un cadeau complet.
+                    Des compositions avantageuses pensées pour vous faire plaisir ou pour offrir un cadeau complet.
                 </p>
             </div>
 
@@ -44,24 +44,22 @@
                                 {{-- Visuel du Pack --}}
                                 <div class="relative aspect-[4/3] bg-[#FDFBF7] overflow-hidden">
                                     @php
-                                        // Priorité 1 : Image du pack (uploadée dans l'admin)
-if ($pack->image) {
-    $cheminImage = str_starts_with($pack->image, 'http')
-        ? $pack->image
-        : asset('storage/' . $pack->image);
-} else {
-    // Priorité 2 : Image du premier produit du pack
-    $premierArticle = $pack->articles->first();
-    $imagePrincipale =
-        $premierArticle && $premierArticle->produit
-            ? $premierArticle->produit->images
-                    ->where('est_principale', true)
-                    ->first() ?? $premierArticle->produit->images->first()
-            : null;
-    $cheminImage = $imagePrincipale
-        ? (str_starts_with($imagePrincipale->chemin, 'http')
-            ? $imagePrincipale->chemin
-            : asset('storage/' . $imagePrincipale->chemin))
+                                        if ($pack->image) {
+                                            $cheminImage = str_starts_with($pack->image, 'http')
+                                                ? $pack->image
+                                                : asset('storage/' . $pack->image);
+                                        } else {
+                                            $premierArticle = $pack->articles->first();
+                                            $imagePrincipale =
+                                                $premierArticle && $premierArticle->produit
+                                                    ? $premierArticle->produit->images
+                                                            ->where('est_principale', true)
+                                                            ->first() ?? $premierArticle->produit->images->first()
+                                                    : null;
+                                            $cheminImage = $imagePrincipale
+                                                ? (str_starts_with($imagePrincipale->chemin, 'http')
+                                                    ? $imagePrincipale->chemin
+                                                    : asset('storage/' . $imagePrincipale->chemin))
                                                 : null;
                                         }
                                     @endphp
@@ -187,8 +185,8 @@ if ($pack->image) {
                         </svg>
                     </div>
                     <div>
-                        <h4 class="text-xs font-bold text-[#4A3525]">100% Fait main</h4>
-                        <p class="text-[10px] text-gray-500">Confection artisanale</p>
+                        <h4 class="text-xs font-bold text-[#4A3525]">Fait main</h4>
+                        <p class="text-[10px] text-gray-500">Artisanat authentique</p>
                     </div>
                 </div>
 
@@ -209,12 +207,12 @@ if ($pack->image) {
                     <div class="w-10 h-10 rounded-xl bg-[#F9EBEA] text-[#E8A598] flex items-center justify-center shrink-0">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                         </svg>
                     </div>
                     <div>
-                        <h4 class="text-xs font-bold text-[#4A3525]">Idéal Cadeau</h4>
-                        <p class="text-[10px] text-gray-500">Présentation soignée</p>
+                        <h4 class="text-xs font-bold text-[#4A3525]">Livraison soignée</h4>
+                        <p class="text-[10px] text-gray-500">Emballage avec soin</p>
                     </div>
                 </div>
 
@@ -223,12 +221,12 @@ if ($pack->image) {
                         class="w-10 h-10 rounded-xl bg-[#F9EBEA] text-[#E8A598] flex items-center justify-center shrink-0">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                         </svg>
                     </div>
                     <div>
-                        <h4 class="text-xs font-bold text-[#4A3525]">Livraison Rapide</h4>
-                        <p class="text-[10px] text-gray-500">Expédition Bénin</p>
+                        <h4 class="text-xs font-bold text-[#4A3525]">Paiement sécurisé</h4>
+                        <p class="text-[10px] text-gray-500">Transactions protégées</p>
                     </div>
                 </div>
             </div>
