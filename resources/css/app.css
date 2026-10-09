@@ -90,7 +90,7 @@ body::-webkit-scrollbar-thumb:hover {
 
 /* ============================================================
    BOUTON WHATSAPP FLOTTANT
-   ⚠️ ANIMATION FLOTTANTE DÉSACTIVÉE (cause des repaints constants)
+    ANIMATION FLOTTANTE DÉSACTIVÉE (cause des repaints constants)
 ============================================================ */
 .whatsapp-float {
     position: fixed;

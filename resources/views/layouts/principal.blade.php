@@ -1202,6 +1202,16 @@
 
             }
 
+            /* =====================================================
+             * FOOTER COMPACT SUR MOBILE
+             * (ferme les accordéons du footer sur petit écran)
+             * ===================================================== */
+            document.querySelectorAll('footer details').forEach(function(d) {
+                if (window.matchMedia('(max-width: 1023px)').matches) {
+                    d.removeAttribute('open');
+                }
+            });
+
         });
     </script>
 
