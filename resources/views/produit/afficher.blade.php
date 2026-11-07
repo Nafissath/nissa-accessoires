@@ -24,8 +24,8 @@
 
                 <!-- Galerie Images -->
                 <div class="space-y-4">
-                    <div
-                        class="aspect-[4/5] bg-gradient-to-br from-nissa-cream to-white rounded-3xl overflow-hidden shadow-xl">
+                   <div
+    class="aspect-square lg:aspect-[4/5] lg:max-h-[600px] bg-gradient-to-br from-nissa-cream to-white rounded-3xl overflow-hidden shadow-xl">
                         @php
                             $imagePrincipale =
                                 $produit->images->where('est_principale', true)->first() ?? $produit->images->first();
