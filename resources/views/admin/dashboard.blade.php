@@ -4,6 +4,9 @@
 
 @section('content')
 
+{{-- Chart.js --}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
 {{-- En-tête --}}
 <div class="mb-8">
     <h1 class="text-3xl font-bold text-nissa-choco" style="font-family: 'Playfair Display', serif;">
@@ -13,13 +16,12 @@
 </div>
 
 {{-- ========================================== --}}
-{{-- 🏆 CARTES PRINCIPALES (CA) --}}
+{{-- CHIFFRE D'AFFAIRES --}}
 {{-- ========================================== --}}
 <div class="mb-6">
-    <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4"> Chiffre d'affaires</h2>
+    <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Chiffre d'affaires</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-        {{-- CA TOTAL --}}
         <div class="bg-gradient-to-br from-nissa-choco to-nissa-rose text-white rounded-2xl p-6 shadow-lg">
             <div class="flex items-center justify-between mb-3">
                 <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
@@ -34,7 +36,6 @@
             <p class="text-xs text-white/70 mt-1">FCFA depuis le début</p>
         </div>
 
-        {{-- CA DU MOIS --}}
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <div class="flex items-center justify-between mb-3">
                 <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center">
@@ -65,7 +66,6 @@
             <p class="text-xs text-gray-500 mt-1">FCFA • {{ $stats['commandes_mois'] }} commande(s)</p>
         </div>
 
-        {{-- CA AUJOURD'HUI --}}
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <div class="flex items-center justify-between mb-3">
                 <div class="w-12 h-12 bg-nissa-rose/10 rounded-xl flex items-center justify-center">
@@ -84,13 +84,107 @@
 </div>
 
 {{-- ========================================== --}}
-{{-- 📦 CARTES SECONDAIRES --}}
+{{-- GRAPHIQUE CA 6 MOIS --}}
 {{-- ========================================== --}}
 <div class="mb-6">
-    <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4"> Commandes & clientes</h2>
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+        <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Évolution du CA (6 derniers mois)</h2>
+        <button onclick="telechargerGraphique()"
+            class="inline-flex items-center gap-2 bg-nissa-choco text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-nissa-rose transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            Télécharger PNG
+        </button>
+    </div>
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+        <div style="height: 320px;">
+            <canvas id="chartCA"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    let chartCA;
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctx = document.getElementById('chartCA');
+        if (!ctx) return;
+
+        const data = @json($caParMois);
+        const labels = data.map(d => d.label);
+        const valeurs = data.map(d => d.valeur);
+
+        chartCA = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Chiffre d\'affaires (FCFA)',
+                    data: valeurs,
+                    borderColor: '#D98B92',
+                    backgroundColor: 'rgba(217, 139, 146, 0.15)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#D98B92',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#3B2A2A',
+                        padding: 12,
+                        titleFont: { size: 13 },
+                        bodyFont: { size: 14, weight: 'bold' },
+                        callbacks: {
+                            label: function (ctx) {
+                                return ctx.parsed.y.toLocaleString('fr-FR') + ' FCFA';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: {
+                            callback: function (val) {
+                                return val.toLocaleString('fr-FR') + ' F';
+                            }
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    });
+
+    function telechargerGraphique() {
+        if (!chartCA) return;
+        const url = chartCA.toBase64Image();
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'ca-nissa-' + new Date().toISOString().slice(0, 10) + '.png';
+        a.click();
+    }
+</script>
+
+{{-- ========================================== --}}
+{{-- COMMANDES & CLIENTES --}}
+{{-- ========================================== --}}
+<div class="mb-6">
+    <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Commandes & clientes</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
-        {{-- Commandes en attente --}}
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <div class="flex items-center justify-between mb-3">
                 <div class="w-10 h-10 bg-yellow-50 rounded-xl flex items-center justify-center">
@@ -104,7 +198,6 @@
             <p class="text-xs text-gray-500 mt-1">À traiter</p>
         </div>
 
-        {{-- Commandes payées --}}
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <div class="flex items-center justify-between mb-3">
                 <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center">
@@ -118,7 +211,6 @@
             <p class="text-xs text-gray-500 mt-1">Total</p>
         </div>
 
-        {{-- Total clientes --}}
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <div class="flex items-center justify-between mb-3">
                 <div class="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center">
@@ -132,7 +224,6 @@
             <p class="text-xs text-gray-500 mt-1">Inscrites</p>
         </div>
 
-        {{-- Produits actifs --}}
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <div class="flex items-center justify-between mb-3">
                 <div class="w-10 h-10 bg-nissa-rose/10 rounded-xl flex items-center justify-center">
@@ -144,18 +235,21 @@
             <p class="text-xs uppercase tracking-wider text-gray-500 mb-1">Produits</p>
             <p class="text-3xl font-bold text-nissa-choco">{{ $stats['produits_total'] }}</p>
             <p class="text-xs text-gray-500 mt-1">Actifs en boutique</p>
+            @if ($stats['ruptures_stock'] > 0)
+                <p class="text-xs text-red-600 mt-1">{{ $stats['ruptures_stock'] }} en rupture</p>
+            @endif
         </div>
 
     </div>
 </div>
 
 {{-- ========================================== --}}
-{{-- 📋 DERNIÈRES COMMANDES --}}
+{{-- DERNIÈRES COMMANDES --}}
 {{-- ========================================== --}}
 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
     <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
         <h2 class="text-lg font-semibold text-nissa-choco">Dernières commandes</h2>
-        <a href="{{ route('admin.commandes.index') ?? '#' }}" class="text-sm text-nissa-rose hover:underline">
+        <a href="{{ route('admin.commandes.index') }}" class="text-sm text-nissa-rose hover:underline">
             Voir tout →
         </a>
     </div>
@@ -181,10 +275,8 @@
                                 </a>
                             </td>
                             <td class="px-6 py-4">
-                                <div>
-                                    <p class="text-sm font-medium text-nissa-choco">{{ $commande->cliente->prenom ?? '' }} {{ $commande->cliente->nom ?? '' }}</p>
-                                    <p class="text-xs text-gray-500">{{ $commande->telephone }}</p>
-                                </div>
+                                <p class="text-sm font-medium text-nissa-choco">{{ $commande->cliente->prenom ?? '' }} {{ $commande->cliente->nom ?? '' }}</p>
+                                <p class="text-xs text-gray-500">{{ $commande->telephone }}</p>
                             </td>
                             <td class="px-6 py-4">
                                 <span class="font-bold text-nissa-rose">{{ number_format($commande->total, 0, ',', ' ') }} FCFA</span>

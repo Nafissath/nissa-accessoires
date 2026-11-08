@@ -21,7 +21,7 @@ class ProduitController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Produit::with(['categorie', 'collection', 'images']);
+        $query = Produit::with(['categorie', 'collection', 'images', 'variantes']);
 
         if ($request->filled('recherche')) {
             $query->where('nom', 'LIKE', "%{$request->recherche}%");
@@ -42,7 +42,50 @@ class ProduitController extends Controller
         $produits = $query->latest()->paginate(20)->withQueryString();
         $categories = Categorie::orderBy('nom')->get();
 
-        return view('admin.produits.index', compact('produits', 'categories'));
+        // 🏆 TOP 5 PRODUITS LES PLUS VENDUS
+        $topProduitsRaw = \App\Models\ArticleCommande::select(
+            'produits.id',
+            'produits.nom',
+            'produits.slug',
+            \Illuminate\Support\Facades\DB::raw('SUM(articles_commande.quantite) as total_vendu'),
+            \Illuminate\Support\Facades\DB::raw('SUM(articles_commande.prix_total) as ca_total')
+        )
+            ->join('produits', 'articles_commande.produit_id', '=', 'produits.id')
+            ->join('commandes', 'articles_commande.commande_id', '=', 'commandes.id')
+            ->where('commandes.statut_paiement', 'paye')
+            ->whereNotNull('articles_commande.produit_id')
+            ->groupBy('produits.id', 'produits.nom', 'produits.slug')
+            ->orderByDesc('total_vendu')
+            ->take(5)
+            ->get();
+
+        $idsProduits = $topProduitsRaw->pluck('id');
+        $images = $idsProduits->isEmpty()
+            ? collect()
+            : ImageProduit::whereIn('produit_id', $idsProduits)->get();
+
+        $topProduits = $topProduitsRaw->map(function ($p) use ($images) {
+            $imagesProduit = $images->where('produit_id', $p->id);
+            $img = $imagesProduit->where('est_principale', true)->first() ?? $imagesProduit->first();
+            $p->image_url = $img
+                ? (str_starts_with($img->chemin, 'http') ? $img->chemin : asset('storage/' . $img->chemin))
+                : null;
+            return $p;
+        });
+
+        // ⚠️ PRODUITS EN RUPTURE (au moins une variante à 0)
+        $produitsRupture = Produit::with(['images', 'variantes', 'categorie'])
+            ->where('est_actif', true)
+            ->whereHas('variantes', fn($q) => $q->where('stock', '<=', 5))
+            ->take(10)
+            ->get();
+
+        return view('admin.produits.index', compact(
+            'produits',
+            'categories',
+            'topProduits',
+            'produitsRupture'
+        ));
     }
 
     public function creer()
@@ -368,14 +411,14 @@ class ProduitController extends Controller
             ->with('success', 'Produit supprimé !');
     }
 
-   public function supprimerImage($imageId)
-{
-    $image = ImageProduit::findOrFail($imageId);
-    \App\Helpers\ImageHelper::delete($image->chemin);
-    $image->delete();
+    public function supprimerImage($imageId)
+    {
+        $image = ImageProduit::findOrFail($imageId);
+        \App\Helpers\ImageHelper::delete($image->chemin);
+        $image->delete();
 
-    return back()->with('success', 'Image supprimée');
-}
+        return back()->with('success', 'Image supprimée');
+    }
     public function imagePrincipale($imageId)
     {
         $image = ImageProduit::findOrFail($imageId);

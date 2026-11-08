@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class ClienteController extends Controller
 {
-    public function index(Request $request)
+       public function index(Request $request)
     {
         $query = Cliente::withCount('commandes')
             ->withSum(['commandes as total_depense' => fn($q) => $q->where('statut_paiement', 'paye')], 'total');
@@ -24,7 +24,14 @@ class ClienteController extends Controller
 
         $clientes = $query->latest()->paginate(15)->withQueryString();
 
-        return view('admin.clientes.index', compact('clientes'));
+        // 👑 TOP 5 MEILLEURES CLIENTES
+        $meilleuresClientes = Cliente::withCount('commandes')
+            ->withSum(['commandes as total_depense' => fn($q) => $q->where('statut_paiement', 'paye')], 'total')
+            ->orderByDesc('total_depense')
+            ->take(5)
+            ->get();
+
+        return view('admin.clientes.index', compact('clientes', 'meilleuresClientes'));
     }
 
     public function show(Cliente $cliente)
